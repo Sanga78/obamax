@@ -5,14 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - Ecomart Accessories</title>
     <link rel="stylesheet" href="../static/css/main.css">
+    <script src="/static/js/navbar.js" defer></script>
 </head>
 <body>
     <header>
-        <h1>Ecomart Accessories</h1>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="products.html">Products</a>
-            <a href="cart.html">Cart</a>
+            <img src="/static/images/logo.png" alt="Ecomart Accessories Logo" class="logo">
+            <input class="menu-btn" type="checkbox" id="menu-btn" />
+            <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
+            <a href="index.html">
+                <img src="/static/images/cart.png" alt="Home" class="nav-icon"> Home
+            </a>
+            <a href="cart.html">
+                <img src="/static/images/cart.png" alt="Cart" class="nav-icon">
+                Cart (<span id="cart-count">0</span>)
+            </a>
+            <div class="dropdown">
+                <button class="dropbtn">
+                    <img src="/static/images/cart.png" alt="Account" class="nav-icon"> Account
+                </button>
+                <div class="dropdown-content">
+                    <a href="login.html">Login</a>
+                    <a href="signup.html">Sign Up</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">
+                    <img src="/static/images/cart.png" alt="" class="nav-icon"> Categories
+                </button>
+                <div class="dropdown-content">
+                    <a href="products.html">Fruits</a>
+                    <a href="products.html">Juices</a>
+                    <a href="">Drinks</a>
+                </div>
+            </div>
+            <div class="login-icon">
+                <div class="icons">
+                    <i class="fa fa-search" id="search-btn" aria-hidden="true"></i>
+                    <i class="fa fa-person" id="cart-btn" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="search-form">
+                <form action="">
+                    <input type="text" id="search-bar" placeholder="Search products...">
+                    <button id="search-button">Search</button>
+                </form>
+            </div>
         </nav>
     </header>
     <main>
