@@ -4,52 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ecomart Accessories</title>
+    <!-- fontawesome cdn link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="../static/css/main.css">
-    <script src="/static/js/navbar.js" defer></script>
+    <script src="../static/js/navbar.js" defer></script>
 </head>
 <body>
     <header>
         <nav>
-            <img src="/static/images/logo.png" alt="Ecomart Accessories Logo" class="logo">
-            <input class="menu-btn" type="checkbox" id="menu-btn" />
-            <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
-            <a href="index.html">
-                <img src="/static/images/cart.png" alt="Home" class="nav-icon"> Home
-            </a>
-            <a href="cart.html">
-                <img src="/static/images/cart.png" alt="Cart" class="nav-icon">
-                Cart (<span id="cart-count">0</span>)
-            </a>
-            <div class="dropdown">
-                <button class="dropbtn">
-                    <img src="/static/images/cart.png" alt="Account" class="nav-icon"> Account
-                </button>
-                <div class="dropdown-content">
-                    <a href="login.html">Login</a>
-                    <a href="signup.html">Sign Up</a>
-                </div>
+            <div>
+                <img src="../static/images/logo.png" alt="Ecomart Accessories Logo" class="logo">
+                <input class="menu-btn" type="checkbox" id="menu-btn" />
+                <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
             </div>
-            <div class="dropdown">
-                <button class="dropbtn">
-                    <img src="/static/images/cart.png" alt="" class="nav-icon"> Categories
-                </button>
-                <div class="dropdown-content">
-                    <a href="products.html">Fruits</a>
-                    <a href="products.html">Juices</a>
-                    <a href="">Drinks</a>
+            <div class="menu">
+                <a href="index.html">
+                    <img src="../static/images/homepage-icon-png-2574.png" alt="Home" class="nav-icon"> Home
+                </a>
+                <a href="">
+                    About Us
+                </a>
+                
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img src="../static/images/arrow-down.png" alt="" class="nav-icon" style="height: 10px; width: 12px;"> Categories
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="products.html">Fruits</a>
+                        <a href="products.html">Juices</a>
+                        <a href="">Drinks</a>
+                    </div>
                 </div>
+                <a href="">
+                    Contact Us
+                </a>
             </div>
-            <div class="login-icon">
-                <div class="icons">
-                    <i class="fa fa-search" id="search-btn" aria-hidden="true"></i>
-                    <i class="fa fa-person" id="cart-btn" aria-hidden="true"></i>
+            <div class="icons">
+                <div class="login-icon">
+                    <img src="../static/images/search-icon-png-9969.png" alt="" id="search-btn">
                 </div>
-            </div>
-            <div class="search-form">
-                <form action="">
-                    <input type="text" id="search-bar" placeholder="Search products...">
-                    <button id="search-button">Search</button>
-                </form>
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img src="../static/images/account-icon-25504.png" alt="Account" class="nav-icon">
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="login.html">Login</a>
+                        <a href="signup.html">Sign Up</a>
+                    </div>
+                </div>
+                <a href="cart.html">
+                    <img src="../static/images/shopping-cart-icon-29076.png" alt="Cart" class="nav-icon" id="cart-icon">
+	    	    <p id="cart-total">1</p>
+                </a>
+                <div class="search-form">
+                    <form action="" method="post">
+                        <input type="text" id="search-bar" placeholder="Search products...">
+                        <button id="search-button">Search</button>
+                    </form>
+                </div>
             </div>
         </nav>
     </header>
@@ -86,7 +98,7 @@
                     <a href="product.html?id=2">View Details</a>
                 </div>
                 <div class="product-card">
-                    <img src="../static/images/green grapes.png" alt="Product 5">
+                    <img src="../static/images/lemon.png" alt="Product 5">
                     <h3>Product 5</h3>
                     <p>$100</p>
                     <a href="product.html?id=1">View Details</a>
@@ -98,6 +110,29 @@
                     <a href="product.html?id=2">View Details</a>
                 </div>
                 <!-- Add more products as needed -->
+            </div>
+        </section>
+        <section class="offers">
+            <h2>Products on Offer</h2>
+            <div class="product-grid">
+                <div class="product-card show">
+                    <img src="../static/images/blue grapes.png" alt="Charger">
+                    <h3>Charger</h3>
+                    <p><del>$39</del> $29</p>
+                    <a href="product.html?id=4">View Details</a>
+                </div>
+                <div class="product-card show">
+                    <img src="../static/images/blue grapes.png" alt="Headphones">
+                    <h3>Headphones</h3>
+                    <p><del>$249</del> $199</p>
+                    <a href="product.html?id=5">View Details</a>
+                </div>
+                <div class="product-card show">
+                    <img src="../static/images/blue grapes.png" alt="Smart Home Device">
+                    <h3>Smart Home Device</h3>
+                    <p><del>$179</del> $149</p>
+                    <a href="product.html?id=6">View Details</a>
+                </div>
             </div>
         </section>
     </main>

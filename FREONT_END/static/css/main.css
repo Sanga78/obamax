@@ -1,3 +1,7 @@
+:root{
+    --main-color: #517ccc;
+}
+
 /* Reset some basic styles */
 body, h1, h2, h3, p, ul, li, a, input, button {
     margin: 0;
@@ -14,7 +18,7 @@ body {
 
 /* Header styles */
 header {
-    background-color: #333;
+    background-color: var(--main-color);
     color: white;
     width: 100%;
     position: fixed;
@@ -23,14 +27,20 @@ header {
 }
 
 /* Navbar styles */
-header nav {
+header nav ,
+header nav > div{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1em;
-    padding: 1em;
+    padding: 8px;
 }
-
+header nav .menu{
+    display: flex;
+    flex-wrap: wrap;
+    /* flex-direction: column; */
+    gap: 20px;
+}
 header nav .logo {
     width: 50px;
     height: 50px;
@@ -48,6 +58,7 @@ header nav .nav-icon {
     width: 24px;
     height: 24px;
     vertical-align: middle;
+    color: #ddd;
 }
 
 header nav input {
@@ -62,7 +73,7 @@ header nav input {
 
 header nav button {
     padding: 0.6em 1em;
-    background-color: #555;
+    background-color: #303030;
     color: white;
     border: none;
     border-radius: 5px;
@@ -102,7 +113,7 @@ header nav span {
 }
 
 .dropbtn {
-    background-color: #333;
+    background-color: var(--main-color);
     color: white;
     padding: 0.5em;
     font-size: 16px;
@@ -111,7 +122,7 @@ header nav span {
 }
 
 .dropbtn:hover, .dropbtn:focus {
-    background-color: #555;
+    background-color: #2959b3;
 }
 
 .dropdown-content {
@@ -201,10 +212,15 @@ main {
     max-width: 100%;
     height: auto;
 }
-
+.product-card a{
+    text-decoration: none;
+    padding: .3em .5em;
+    background-color: var(--main-color);
+    color: whitesmoke;
+}
 /* Footer styles */
 footer {
-    background-color: #333;
+    background-color: var(--main-color);
     color: white;
     text-align: center;
     padding: 1em 0;
@@ -370,17 +386,39 @@ header nav{
 
 header nav .search-form {
     position: absolute;
-    top: 115%;
+    top: 75%;
     right: 7%;
-    background: whitesmoke;
-    width: 30rem;
+    background: rgba(47, 86, 185, 0.6);
+    width: 23rem;
     height: 3.5rem;
     display: flex;
     align-items: center;
     transform: scaleY(0);
     transform-origin: top;
+    padding: 0 6px;
 }
 
 header nav .search-form.active {
     transform: scaleY(1);
 }
+
+.featured-products, .offers {
+    padding: 2em;
+}
+
+#cart-total{
+	display: block;
+	text-align: center;
+	color:#fff;
+	background-color: red;
+	width: 16px;
+	height: 18px;
+	border-radius: 50%;
+	font-size: 14px;
+}
+
+/* #cart-icon{
+	width:25px;
+	display: inline-block;
+	margin-left: 15px;
+} */
