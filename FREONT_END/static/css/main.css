@@ -148,32 +148,120 @@ header nav span {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+header nav .menu-icon{
+    padding: 28px 20px;
+    position: relative;
+    float: right;
+    cursor: pointer;
+}
+header nav .menu-icon .nav-icon{
+    background: white;
+    display: block;
+    height: 2px;
+    width: 18px;
+    position: relative;
+    transition: background .2s ease-out;
+}
+header nav .menu-icon .nav-icon:before{
+    background: white;
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transition: all .2s ease-out;
+    top: 5px;
+}
+header nav .menu-icon .nav-icon:after{
+    background: white;
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transition: all .2s ease-out;
+    top: -5px;
+}
+header nav .menu-btn{
+    display: none;
+}
+header nav .menu-btn:checked ~ .menu{
+    max-height: 400px;
+}
+header nav .menu-btn:checked ~ .menu-icon .nav-icon{
+    background: transparent;
+}
+header nav .menu-btn:checked ~ .menu-icon .nav-icon:before{
+    transform: rotate(-45deg);
+    top: 0;
+}
+header nav .menu-btn:checked ~ .menu-icon .nav-icon:after{
+    transform: rotate(45deg);
+    top: 0;
+}
+header nav{
+    clear: both;
+}
 
+header nav .search-form {
+    position: absolute;
+    top: 75%;
+    right: 7%;
+    background: rgba(47, 86, 185, 0.6);
+    width: 23rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    transform: scaleY(0);
+    transform-origin: top;
+    padding: 0 6px;
+}
+
+header nav .search-form.active {
+    transform: scaleY(1);
+}
 /* Responsive navbar styles */
 @media (max-width: 768px) {
-    header nav {
-        flex-direction: column;
-        align-items: flex-start;
+    header nav .menu{
+       display: none;
+       flex-direction: column;
+       justify-content: flex-start;
     }
 
     header nav .logo {
-        margin-right: 0;
+        display: none;
     }
-
-    header nav a, .dropdown, .menu-icon {
+    /* header nav .icons{
+        margin-right: 2rem;
+    } */
+    .menu-icon {
         display: none;
     }
 
-    header nav input, header nav button {
-        margin-top: 1em;
+    header nav .search-form {
+        width: 80%;
+        height: 2.4rem;
+    }
+    header nav input{
+        width: 80%;
+        font-size: 78%;
+    }
+    header nav button {
+        padding: 6px;
+        font-size: .85rem;
     }
 
     header nav.active a, header nav.active .dropdown {
         display: flex;
     }
-
     .menu-icon {
         display: block;
+    }
+    header nav .icons{
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 5px;
     }
 }
 
@@ -329,78 +417,6 @@ footer {
     background-color: #555;
 }
 
-header nav .menu-icon{
-    padding: 28px 20px;
-    position: relative;
-    float: right;
-    cursor: pointer;
-}
-header nav .menu-icon .nav-icon{
-    background: white;
-    display: block;
-    height: 2px;
-    width: 18px;
-    position: relative;
-    transition: background .2s ease-out;
-}
-header nav .menu-icon .nav-icon:before{
-    background: white;
-    content: "";
-    display: block;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    transition: all .2s ease-out;
-    top: 5px;
-}
-header nav .menu-icon .nav-icon:after{
-    background: white;
-    content: "";
-    display: block;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    transition: all .2s ease-out;
-    top: -5px;
-}
-header nav .menu-btn{
-    display: none;
-}
-header nav .menu-btn:checked ~ .menu{
-    max-height: 400px;
-}
-header nav .menu-btn:checked ~ .menu-icon .nav-icon{
-    background: transparent;
-}
-header nav .menu-btn:checked ~ .menu-icon .nav-icon:before{
-    transform: rotate(-45deg);
-    top: 0;
-}
-header nav .menu-btn:checked ~ .menu-icon .nav-icon:after{
-    transform: rotate(45deg);
-    top: 0;
-}
-header nav{
-    clear: both;
-}
-
-header nav .search-form {
-    position: absolute;
-    top: 75%;
-    right: 7%;
-    background: rgba(47, 86, 185, 0.6);
-    width: 23rem;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-    transform: scaleY(0);
-    transform-origin: top;
-    padding: 0 6px;
-}
-
-header nav .search-form.active {
-    transform: scaleY(1);
-}
 
 .featured-products, .offers {
     padding: 2em;
