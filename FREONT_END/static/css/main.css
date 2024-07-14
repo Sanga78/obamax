@@ -35,11 +35,11 @@ header nav > div{
     gap: 1em;
     padding: 8px;
 }
-header nav .menu{
+header nav ul{
     display: flex;
-    flex-wrap: wrap;
-    /* flex-direction: column; */
+    align-items: center;
     gap: 20px;
+    list-style-type: none;
 }
 header nav .logo {
     width: 50px;
@@ -99,6 +99,9 @@ header nav img {
 header nav span {
     vertical-align: middle;
 }
+header nav ul li a:hover{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.65);
+  }
 
 .menu-icon {
     display: none;
@@ -222,18 +225,12 @@ header nav .search-form.active {
 }
 /* Responsive navbar styles */
 @media (max-width: 768px) {
-    header nav .menu{
-       display: none;
-       flex-direction: column;
-       justify-content: flex-start;
+    header nav ul{
+        display: none;
     }
-
     header nav .logo {
         display: none;
     }
-    /* header nav .icons{
-        margin-right: 2rem;
-    } */
     .menu-icon {
         display: none;
     }
@@ -262,6 +259,22 @@ header nav .search-form.active {
         flex-wrap: nowrap;
         align-items: center;
         gap: 5px;
+    }
+    header nav.active ul{
+        display: block;
+        font-size: 1rem;
+        position: absolute;
+        background-color: rgba(81, 124, 204,0.95);
+        min-width: 160px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        left: 0px;
+        top: 100%;
+    }
+    header nav ul li {
+        display: block;
+        min-width: 100px;
+        margin: 10px;
     }
 }
 

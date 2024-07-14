@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const cartCount = document.getElementById('cart-count');
+    const cartCount = document.getElementById('cart-total');
     const searchBar = document.getElementById('search-bar');
     const searchButton = document.getElementById('search-button');
     const menuIcon = document.getElementById('menu-btn');
