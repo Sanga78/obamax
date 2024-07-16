@@ -517,6 +517,9 @@ footer {
     .cart {
         padding: 1em;
     }
+    #cart-main{
+        padding: 2rem .5rem;
+    }
 
     .cart-header {
         align-items: stretch;
