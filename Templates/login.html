@@ -2,13 +2,22 @@
 {% block content %}      
 <section class="auth-form">
     <h2>Login</h2>
-    <form id="login-form">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+    <form id="login-form" method="post" autocomplete="off">
+        {% csrf_token %}
+        {% if messages %}
+            {% for message in messages %}
+            <script>
+                alert("{{message}}")
+            </script>
+            {% endfor %}
+        {% endif %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <button type="submit">Login</button>
     </form>
+        <center><a style="color: blue;" href="" class="text-muted small">Forgot your password?</a></center>
     <p>Don't have an account? <a href="{% url "register" %}">Sign up</a></p>
 </section>
 {% endblock content %}
