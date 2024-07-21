@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content%}
+<h1>Shopping Cart</h1>
+<ul>
+    {% for item in cart_items %}
+    <li>{{ item.product.name}}</li>
+    {% endfor %}
+</ul>
+<p>Total : $ {{total_price}}</p>
+<a href="{% url 'store:checkout' %}">Checkout</a>
+{% endblock content %}

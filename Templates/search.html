@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+   
+    <section class="featured-products">
+        {% if products %}
+            <h2>Search Results</h2>
+            <div class="product-grid">
+                <!-- Example product cards -->
+                    {% for product in products %}
+                    {% comment %} <a href="{% url 'store:product_detail' product.id %}"> {% endcomment %}
+                    <div class="product-card">
+                        <img src="{{ product.imageURL }}" alt="{{ product.name }}">
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.price }}</p>
+                        <a href="{% url 'store:product_detail' product.id %}">View Details</a>
+                    </div>
+                {% comment %} </a> {% endcomment %}
+                    {% endfor %}
+                <!-- Add more products as needed -->
+            </div>
+        {% else %}
+        <h2 style="color:red;">No record matching your query was found</h2>
+        {% endif %}
+    </section>
+
+       
+{% endblock content %}
