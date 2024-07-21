@@ -1,17 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Ecomart Accessories</title>
-    <link rel="stylesheet" href="../static/css/main.css">
-    <script src="../static/js/navbar.js" defer></script>
+    <title>Ecomart Accessories</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script src="{% static 'js/navbar.js' %}" defer></script>
 </head>
 <body>
     <header>
         <nav>
             <div>
-                <img src="../static/images/logo.png" alt="Ecomart Accessories Logo" class="logo">
+                <img src="{% static "images/Logo.png" %}" alt="Ecomart Accessories Logo" class="logo">
                 <input class="menu-btn" type="checkbox" id="menu-btn" />
                 <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
                 <div id="nav-grid"></div>
@@ -19,19 +20,19 @@
             <div class="menu">
                 <ul>
                     <li>
-                        <a href="index.html">
-                            <img src="../static/images/homepage-icon-png-2574.png" alt="Home" class="nav-icon"> Home
+                        <a href="{% url "home_page" %}">
+                            <img src="{% static "images/Home.png" %}" alt="Home" class="nav-icon"> Home
                         </a>
                     </li>
                     <li>
-                        <a href="">
-                            <img src="../static/images/homepage-icon-png-2574.png" alt="Home" class="nav-icon"> About Us
+                        <a href="{% url "store:about" %}">
+                            <img src="{% static "images/shopping-cart.png" %}" alt="Home" class="nav-icon"> About Us
                         </a>
                     </li>
                     <li>
                         <div class="dropdown">
                             <button class="dropbtn">
-                                <img src="../static/images/arrow-down.png" alt="" class="nav-icon" style="height: 10px; width: 12px;"> Categories
+                                <img src="{% static "images/arrow-down.png" %}" alt="" class="nav-icon" style="height: 10px; width: 12px;"> Categories
                             </button>
                             <div class="dropdown-content">
                                 <a href="products.html">Fruits</a>
@@ -41,27 +42,27 @@
                         </div>
                     </li>
                     <li>
-                        <a href="">
-                            <img src="../static/images/homepage-icon-png-2574.png" alt="Home" class="nav-icon">Contact Us
+                        <a href="{% url "store:contact" %}">
+                            <img src="{% static "images/contact.png" %}" alt="Home" class="nav-icon">Contact Us
                         </a>
                     </li>
                 </ul>   
             </div>
             <div class="icons">
                 <div class="login-icon">
-                    <img src="../static/images/search-icon-png-9969.png" alt="" id="search-btn">
+                    <img src="{% static "images/search.png" %}" alt="" id="search-btn">
                 </div>
                 <div class="dropdown">
                     <button class="dropbtn">
-                        <img src="../static/images/account-icon-25504.png" alt="Account" class="nav-icon">
+                        <img src="{% static "images/account.png" %}" alt="Account" class="nav-icon">
                     </button>
                     <div class="dropdown-content">
-                        <a href="login.html">Login</a>
-                        <a href="signup.html">Sign Up</a>
+                        <a href="{% url "login" %}">Login</a>
+                        <a href="{% url "register" %}">Sign Up</a>
                     </div>
                 </div>
-                <a href="cart.html">
-                    <img src="../static/images/shopping-cart-icon-29076.png" alt="Cart" class="nav-icon" id="cart-icon">
+                <a href="{% url "store:cart" %}">
+                    <img src="{% static "images/cart.png" %}" alt="Cart" class="nav-icon" id="cart-icon">
 	    	    <p id="cart-total-icon">1</p>
                 </a>
                 <div class="search-form">
@@ -74,17 +75,8 @@
         </nav>
     </header>
     <main>
-        <section class="auth-form">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-            <p>Already have an account? <a href="login.html">Login</a></p>
-        </section>
+       {% block content %}
+       {% endblock content%}
     </main>
     <footer>
         <p>&copy; 2024 Ecomart Accessories. All rights reserved.</p>

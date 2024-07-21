@@ -14,10 +14,18 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10,decimal_places=2)
     stock = models.IntegerField()
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(null=True,blank=True,upload_to='products/')
 
     def __str__(self):
-        return self.name    
+        return self.name   
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url 
     
 class Accesory(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)

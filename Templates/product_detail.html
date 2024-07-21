@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="product-detail">
+    <h2 id="product-name">{{product.name}}</h2>
+    <img id="product-image" src="{{product.imageURL}}" alt="Product Image">
+    <p id="product-price">{{product.price}}</p>
+    <p id="product-description">{{product.description}}Product description goes here...</p>
+    <button id="add-to-cart">Add to Cart</button>
+</section>
+{% endblock content %}
