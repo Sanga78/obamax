@@ -41,7 +41,7 @@ function addCookieItem(productId, action){
 function updateUserOrder(productId,action){
     console.log('User is authenticated, sending data...')
 
-    var url = '/update_item/'
+    var url = '/update_item'
 
     fetch(url,{
         method:'POST',
