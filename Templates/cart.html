@@ -3,7 +3,7 @@
 {% block content %}
 <section class="cart">
     <div class="cart-header">
-        <a class="btn-continue-shopping" href="{% url 'home_page' %}">&#x2190; Continue Shopping</a>
+        <a class="btn-continue-shopping" href="{% url 'store:home_page' %}">&#x2190; Continue Shopping</a>
         <table class="cart-summary">
             <tr>
                 <th>Items: <strong>{{order.get_cart_items}}</strong></th>
