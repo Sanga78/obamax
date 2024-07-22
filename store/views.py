@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from store.utils import cartData, guestOrder
 # from .models import Accesory, Cart, CartItem, Order, OrderItem, Product
-from .models import Accesory, Order, OrderItem, Product, ShippingAddress
+from .models import Accesory, Customer, Order, OrderItem, Product, ShippingAddress
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
@@ -167,7 +167,8 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request,f"Logged in Successfully as {username}")
-                return redirect('home_page')
+                customer, created = Customer.objects.get_or_create(user=request.user)
+                return redirect('store:home_page')
             else:
                 messages.info(request,"Account doesn't exists")
                 return redirect('register')
@@ -194,7 +195,13 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username,email=email,password=password)
                 user.save()
-                return redirect('login')
+                 # Logging in user
+                user = authenticate(username=username, password=password)
+                customer, created = Customer.objects.get_or_create(user=user)
+                login(request, user)
+
+            messages.success(request, "Registration successful")
+            return redirect('store:home_page')
         else:
             messages.info(request,'Password Not The Same')
             return redirect('register')
