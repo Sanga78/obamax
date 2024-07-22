@@ -321,6 +321,9 @@ main {
 }
 
 .product-card {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
     background-color: white;
     border: 1px solid #ddd;
     padding: 1em;
@@ -329,8 +332,13 @@ main {
 }
 
 .product-card img {
+    flex: 75;
     max-width: 100%;
     height: auto;
+    margin: 0 auto;
+}
+.product-card .description{
+    flex: 25;
 }
 .product-card a{
     text-decoration: none;

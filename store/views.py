@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from store.utils import cartData, guestOrder
 # from .models import Accesory, Cart, CartItem, Order, OrderItem, Product
-from .models import Accesory, Customer, Order, OrderItem, Product, ShippingAddress
+from .models import Accesory, Category, Customer, Order, OrderItem, Product, ShippingAddress
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
@@ -37,6 +37,19 @@ def about_page(request):
 
 def contact_us(request):
     return render(request,"contact.html")
+
+def category(request, name):
+    data = cartData(request)
+    cartItems = data['cartItems']
+    # Grab the category from the url
+    try:
+        category = Category.objects.get(name=name)
+        cat_products = Product.objects.filter(category=category)
+        return  render(request, "category.html", {'cat_products':cat_products, 'category':category,'cartItems':cartItems})
+
+    except:
+        messages.warning(request, "That category doesn't exist")
+        return render(request,"category.html")
 
 #search functionality
 def search(request):

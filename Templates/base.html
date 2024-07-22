@@ -83,9 +83,9 @@
                                 <img src="{% static "images/arrow-down.png" %}" alt="" class="nav-icon" style="height: 10px; width: 12px;"> Categories
                             </button>
                             <div class="dropdown-content">
-                                <a href="products.html">Fruits</a>
-                                <a href="products.html">Juices</a>
-                                <a href="">Drinks</a>
+                                    <a href="{% url 'store:category' 'Laptop' %}">Laptops</a>
+                                    <a href="{% url 'store:category' 'TVs' %}">Televisions</a>    
+                                    <a href="{% url 'store:category' 'Phones' %}">Phones</a>
                             </div>
                         </div>
                     </li>
