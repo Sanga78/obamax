@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<section class="product-detail">
-    <h2 id="product-name">{{product.name}}</h2>
-    <img id="product-image" src="{{product.imageURL}}" alt="Product Image">
-    <p id="product-price">{{product.price}}</p>
-    <p id="product-description">{{product.description}}Product description goes here...</p>
-    <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+<section class="product-detail-container">
+    <h2 class="product-name">{{product.name}}</h2>
+    <img class="product-image" src="{{product.imageURL}}" alt="Product Image">
+    <p class="product-price">{{product.price}}</p>
+    <p class="product-description">{{product.description}}Product description goes here...</p>
+    <button data-product="{{product.id}}" data-action="add" class="add-to-cart-button add-btn update-cart">Add to Cart</button>
 </section>
 {% endblock content %}

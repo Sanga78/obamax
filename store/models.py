@@ -16,6 +16,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10,decimal_places=2)
     stock = models.IntegerField()
     image = models.ImageField(null=True,blank=True,upload_to='products/')
+    digital = models.BooleanField(default=False,null=True, blank=False)
 
     def __str__(self):
         return self.name   

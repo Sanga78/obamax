@@ -144,7 +144,7 @@
 				alert('Proceed to pay');
 				cart = {}
 				document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
-                window.location.href = "{% url 'home_page' %}";
+                window.location.href = "{% url 'store:home_page' %}";
 			})			
 		}
 	</script>
