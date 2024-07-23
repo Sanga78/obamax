@@ -225,3 +225,8 @@ def logout_request(request):
     logout(request)
     messages.info(request,"Logged out successfully!")
     return redirect('/')
+
+@login_required
+def profile(request):
+    orders = Order.objects.filter(customer=request.user)
+    return render(request,'profile.html')
