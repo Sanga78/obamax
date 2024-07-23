@@ -71,6 +71,7 @@ class Accesory(models.Model):
 #HANDLING UNREGISTERED USERS    
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE, null=True,blank=True)
+    phone_no = models.CharField(max_length=20, blank=True, null=True)
     name = models.CharField(max_length= 200,null=True)
     email = models.CharField(max_length=200, null=True)
 
