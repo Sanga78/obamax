@@ -228,5 +228,6 @@ def logout_request(request):
 
 @login_required
 def profile(request):
-    orders = Order.objects.filter(customer=request.user)
-    return render(request,'profile.html')
+    customer = get_object_or_404(Customer, user=request.user)
+    orders = Order.objects.filter(customer=customer, complete=True)
+    return render(request, 'profile.html', {'customer': customer, 'orders': orders})
