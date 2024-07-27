@@ -106,7 +106,7 @@
                     </button>
                     <div class="dropdown-content">
                         {% if user.is_authenticated %}
-                            <a href="">My Profile</a>
+                            <a href="{% url 'store:profile' %}">My Profile</a>
                             <a href="{% url "logout" %}">Logout</a>
                         {% else %}
                             <a href="{% url "login" %}">Login</a>

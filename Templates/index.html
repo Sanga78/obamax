@@ -23,14 +23,18 @@
         <section class="offers">
             <h2>Products on Offer</h2>
             <div class="product-grid">
+                <!-- {% for product in products %}
+                {% if product.discount > 0.00%}
                 <div class="product-card show">
-                    <img src="../static/images/samsung-galaxy-s23-ultra-black-transparent-image-free-png.webp" alt="Charger">
+                    <img class="product_img" src="{{ product.imageURL }}" alt="{{ product.name }}">
                     <div class="description">
-                        <h3>Charger</h3>
-                        <p><del>$39</del> $29</p>
+                        <h3>{{ product.name }}</h3>
+                        <p><del>ksh{{ product.price }}</del> ksh {{product.product_price}}</p>
                         <a href="">View Details</a>
                     </div>
                 </div>
+                {% endif %}
+                {% endfor %} -->
                 <div class="product-card show">
                     <img src="../static/images/samsung-galaxy-s23-ultra-black-transparent-image-free-png.webp" alt="Headphones">
                     <div class="description">
