@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+from decimal import Decimal
 from django.contrib.auth.models import User
 # Create your models here.
 class Category(models.Model):
@@ -11,12 +13,15 @@ class Category(models.Model):
     
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10,decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
-    image = models.ImageField(null=True,blank=True,upload_to='products/')
-    digital = models.BooleanField(default=False,null=True, blank=False)
+    image = models.ImageField(null=True, blank=True, upload_to='products/')
+    digital = models.BooleanField(default=False, null=True, blank=False)
+    flash_sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    flash_sale_end = models.DateTimeField(null=True, blank=True)
+    discount_percentage = models.FloatField(default=0)
 
     def __str__(self):
         return self.name   
@@ -29,6 +34,19 @@ class Product(models.Model):
             url = ''
         return url 
     
+    @property
+    def get_flash_sale_price(self):
+        if self.flash_sale_price and self.flash_sale_end and self.flash_sale_end > timezone.now():
+            return self.flash_sale_price
+        return self.price
+
+    @property
+    def get_discount_price(self):
+        if self.discount_percentage > 0:
+            return self.price * Decimal(1 - self.discount_percentage / 100)
+        return self.price
+
+
 class Accesory(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     accesory_type = models.CharField(max_length=255)
