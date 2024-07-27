@@ -2,7 +2,7 @@ import datetime
 import json
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.utils import timezone
 from store.utils import cartData, guestOrder
 # from .models import Accesory, Cart, CartItem, Order, OrderItem, Product
 from .models import Accesory, Category, Customer, Order, OrderItem, Product, ShippingAddress
@@ -17,8 +17,11 @@ def index(request):
     data = cartData(request)
     cartItems = data['cartItems']
     products = Product.objects.all()
-    context= {'products':products,'cartItems': cartItems}
-    return render(request,"index.html",context)
+    flash_sales = Product.objects.filter(flash_sale_end__gt=timezone.now())
+    for product in flash_sales:
+        print(product.name)
+    context = {'products': products, 'cartItems': cartItems, 'flash_sales': flash_sales}
+    return render(request, "index.html", context)
 
 def product_detail(request,product_id):
     data = cartData(request)
