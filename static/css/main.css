@@ -964,7 +964,7 @@ footer {
     margin-bottom: 20px;
 }
 
-#update-profile-button, #save-profile-button {
+#save-profile-button {
     display: block;
     width: 100%;
     padding: 10px;
@@ -976,12 +976,8 @@ footer {
     cursor: pointer;
 }
 
-#update-profile-button:hover, #save-profile-button:hover {
+#save-profile-button:hover{
     background-color: #0056b3;
-}
-
-#update-form {
-    display: none;
 }
 
 .form-field {
