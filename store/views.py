@@ -1,6 +1,6 @@
 import datetime
 import json
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from store.utils import cartData, guestOrder
@@ -33,10 +33,14 @@ def product_detail(request,product_id):
     return render(request,"product_detail.html", context)
 
 def about_page(request):
-    return render(request,"about.html")
+    data = cartData(request)
+    cartItems = data['cartItems']
+    return render(request,"about.html",{'cartItems':cartItems})
 
 def contact_us(request):
-    return render(request,"contact.html")
+    data = cartData(request)
+    cartItems = data['cartItems']
+    return render(request,"contact.html",{'cartItems':cartItems})
 
 def category(request, name):
     data = cartData(request)
@@ -210,7 +214,7 @@ def register(request):
                 user.save()
                  # Logging in user
                 user = authenticate(username=username, password=password)
-                customer, created = Customer.objects.get_or_create(user=user)
+                customer, created = Customer.objects.get_or_create(user=user,name=username,email=email)
                 login(request, user)
 
             messages.success(request, "Registration successful")
@@ -229,5 +233,27 @@ def logout_request(request):
 @login_required
 def profile(request):
     customer = get_object_or_404(Customer, user=request.user)
-    orders = Order.objects.filter(customer=customer, complete=True)
-    return render(request, 'profile.html', {'customer': customer, 'orders': orders})
+    data = cartData(request)
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
+    orders = Order.objects.filter(customer=customer)
+    print(orders)
+    context ={'customer': customer, 'orders': orders,'cartItems':cartItems,'items':items}
+    return render(request, 'profile.html',context)
+@login_required
+def update_profile(request):
+    if request.method != "POST":
+        HttpResponse("<h1>Method Not Allowed</h1>")
+    else:
+        name = request.POST["name"]
+        email = request.POST["email"]
+        phone_no = request.POST["phone"]
+
+        customer = Customer.objects.get(user=request.user)
+        customer.name = name
+        customer.email = email
+        customer.phone_no = phone_no
+        customer.save()
+
+    return HttpResponseRedirect("profile")
