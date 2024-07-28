@@ -12,7 +12,12 @@
                     <img class="product_img" src="{{ product.imageURL }}" alt="{{ product.name }}">
                     <div class="description">
                         <h3>{{ product.name }}</h3>
-                        <p>{{ product.price }}</p>
+                        {% if product.discount_percentage > 0 %}
+                            <p><del>ksh{{ product.price }}</del> ksh {{ product.get_discount_price|floatformat:2 }}</p>
+                            <p>Discount: {{ product.discount_percentage }}%</p>
+                        {% else %}
+                            <p>Price: ${{ product.price }}</p>
+                        {% endif %}
                         <a href="{% url 'store:product_detail' product.id %}">View Details</a>
                     </div>
                 </div>
@@ -21,7 +26,7 @@
             </div>
         </section>
         <section class="offers">
-            <h2>Products on Offer</h2>
+            <h2>Flash sales</h2>
             <div class="product-grid">
                 <!-- {% for product in products %}
                 {% if product.discount > 0.00%}
@@ -35,7 +40,20 @@
                 </div>
                 {% endif %}
                 {% endfor %} -->
+                {% for product in flash_sales %}
                 <div class="product-card show">
+                    <img src="{{ product.imageURL }}" alt="{{ product.name }}">
+                    <div class="description">
+                    <h3>{{ product.name }}</h3>
+                    <p><del>${{ product.price }}</del>${{ product.get_flash_sale_price }}</p>
+                    <p id="countdown-{{ product.id }}"></p>
+                    <script>
+                        startCountdown("{{ product.flash_sale_end|date:'Y-m-d H:i:s' }}", "countdown-{{ product.id }}");
+                    </script>
+                    </div>
+                </div>
+            {% endfor %}
+                <!-- <div class="product-card show">
                     <img src="../static/images/samsung-galaxy-s23-ultra-black-transparent-image-free-png.webp" alt="Headphones">
                     <div class="description">
                         <h3>Headphones</h3>
@@ -50,7 +68,33 @@
                         <p><del>$179</del> $149</p>
                         <a href="">View Details</a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </section>
+
+        <script type="text/javascript">
+            // Countdown timer function
+            function startCountdown(endTime, elementId) {
+                var countdownElement = document.getElementById(elementId);
+                var endTimeDate = new Date(endTime).getTime();
+    
+                var interval = setInterval(function() {
+                    var now = new Date().getTime();
+                    var distance = endTimeDate - now;
+    
+                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+                    countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+    
+                    if (distance < 0) {
+                        clearInterval(interval);
+                        countdownElement.innerHTML = "EXPIRED";
+                        // Optionally, hide the element or remove the product from display
+                    }
+                }, 1000);
+            }
+        </script>
 {% endblock content %}
