@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+    aside{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 90vh;
+        background-color: beige;
+        max-width: 40vh;
+        width: auto;
+    }
+    header nav .menu-icon{
+    padding: 28px 20px;
+    position: relative;
+    cursor: pointer;
+}
+header nav .menu-icon .nav-icon{
+    background: rgb(0, 0, 0);
+    display: block;
+    height: 2px;
+    width: 18px;
+    position: relative;
+    transition: background .2s ease-out;
+}
+header nav .menu-icon .nav-icon:before{
+    background: rgb(10, 10, 10);
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transition: all .2s ease-out;
+    top: 5px;
+}
+header nav .menu-icon .nav-icon:after{
+    background: rgb(19, 19, 19);
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transition: all .2s ease-out;
+    top: -5px;
+}
+header nav .menu-btn{
+    display: none;
+}
+header nav .menu-btn:checked ~ .menu{
+    max-height: 400px;
+}
+header nav .menu-btn:checked ~ .menu-icon .nav-icon{
+    background: transparent;
+}
+header nav .menu-btn:checked ~ .menu-icon .nav-icon:before{
+    transform: rotate(-45deg);
+    top: 0;
+}
+header nav .menu-btn:checked ~ .menu-icon .nav-icon:after{
+    transform: rotate(45deg);
+    top: 0;
+}
+header nav{
+    clear: both;
+}
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+    }
+    header nav input{
+        width: 80%;
+        font-size: 78%;
+    }
+}
+
+   </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div>
+                <input class="menu-btn" type="checkbox" id="menu-btn" />
+                <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
+                <div id="nav-grid"></div>
+            </div>
+        </nav>
+    </header>
+    <aside>
+        <ul>
+            <li>CATEGORIES</li>
+            <li>Reseller Login</li>          
+        </ul>
+        <div>
+            <ul>
+                <li>My Profile</li>
+                <li>Logout</li>
+            </ul>
+        </div>
+    </aside>
+</body>
+</html>
