@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
    <style>
+    ul,li{
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
     aside{
         display: flex;
         flex-direction: column;
@@ -14,12 +19,12 @@
         max-width: 40vh;
         width: auto;
     }
-    header nav .menu-icon{
+    .menu .menu-icon{
     padding: 28px 20px;
     position: relative;
     cursor: pointer;
 }
-header nav .menu-icon .nav-icon{
+.menu .menu-icon .nav-icon{
     background: rgb(0, 0, 0);
     display: block;
     height: 2px;
@@ -27,7 +32,7 @@ header nav .menu-icon .nav-icon{
     position: relative;
     transition: background .2s ease-out;
 }
-header nav .menu-icon .nav-icon:before{
+.menu .menu-icon .nav-icon:before{
     background: rgb(10, 10, 10);
     content: "";
     display: block;
@@ -37,7 +42,7 @@ header nav .menu-icon .nav-icon:before{
     transition: all .2s ease-out;
     top: 5px;
 }
-header nav .menu-icon .nav-icon:after{
+.menu .menu-icon .nav-icon:after{
     background: rgb(19, 19, 19);
     content: "";
     display: block;
@@ -47,64 +52,79 @@ header nav .menu-icon .nav-icon:after{
     transition: all .2s ease-out;
     top: -5px;
 }
-header nav .menu-btn{
+.menu .menu-btn{
     display: none;
 }
-header nav .menu-btn:checked ~ .menu{
+.menu .menu-btn:checked ~ .menu{
     max-height: 400px;
 }
-header nav .menu-btn:checked ~ .menu-icon .nav-icon{
+.menu .menu-btn:checked ~ .menu-icon .nav-icon{
     background: transparent;
 }
-header nav .menu-btn:checked ~ .menu-icon .nav-icon:before{
+.menu .menu-btn:checked ~ .menu-icon .nav-icon:before{
     transform: rotate(-45deg);
     top: 0;
 }
-header nav .menu-btn:checked ~ .menu-icon .nav-icon:after{
+.menu .menu-btn:checked ~ .menu-icon .nav-icon:after{
     transform: rotate(45deg);
     top: 0;
 }
-header nav{
-    clear: both;
+
+.list-elements{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
 }
 @media (max-width: 768px) {
     .menu-icon {
         display: block;
     }
-    header nav input{
+    menu input{
         width: 80%;
         font-size: 78%;
     }
+}
+.main-list{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 }
 
    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <div>
+    <aside>
+        <div class="list-elements">
+            <ul class="main-list">
+                <li>CATEGORIES</li>
+                <ul>
+                    <li>Tvs</li>
+                    <li>Phones and Tablets</li>
+                    <li>Laptops</li>
+                    <li>Health & Beauty</li>
+                    <li>Groceries and Pets</li>
+                    <li>Sports and Outdoor</li>
+                    <li>Women's Fashion</li>
+                    <li>Men's Fashion</li>
+                    <li>Home and Lifestyle</li>
+                    <li>Baby's and Toys</li>
+                </ul>
+                <li>Reseller Login</li>          
+            </ul>
+            <div class="menu">
                 <input class="menu-btn" type="checkbox" id="menu-btn" />
                 <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
                 <div id="nav-grid"></div>
             </div>
-        </nav>
-    </header>
-    <aside>
-        <ul>
-            <li>CATEGORIES</li>
-            <ul>
-                <li>Tvs</li>
-                <li>Phones and Tablets</li>
-                <li>Laptops</li>
-            </ul>
-            <li>Reseller Login</li>          
-        </ul>
-        <div>
-            <ul>
-                <li>My Profile</li>
-                <li>Logout</li>
-            </ul>
-        </div>
+        </div> 
+            <div>
+                <ul>
+                    <li>My Profile</li>
+                    <li>Logout</li>
+                </ul>
+            </div>
+              
     </aside>
 </body>
 </html>
