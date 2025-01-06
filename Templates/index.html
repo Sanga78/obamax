@@ -13,10 +13,10 @@
                     <div class="description">
                         <h3>{{ product.name }}</h3>
                         {% if product.discount_percentage > 0 %}
-                            <p><del>ksh{{ product.price }}</del> ksh {{ product.get_discount_price|floatformat:2 }}</p>
+                            <p><del>ksh {{ product.price }}</del> ksh {{ product.get_discount_price|floatformat:2 }}</p>
                             <p>Discount: {{ product.discount_percentage }}%</p>
                         {% else %}
-                            <p>Price: ${{ product.price }}</p>
+                            <p>Price: ksh {{ product.price }}</p>
                         {% endif %}
                         <a href="{% url 'store:product_detail' product.id %}">View Details</a>
                     </div>
@@ -40,19 +40,19 @@
                 </div>
                 {% endif %}
                 {% endfor %} -->
-                <div>
+                <!-- <div>
                     <p id="demo"></p>
-                </div>
+                </div> -->
                 {% for product in flash_sales %}
                 <div class="product-card show">
                     <img src="{{ product.imageURL }}" alt="{{ product.name }}">
                     <div class="description">
                     <h3>{{ product.name }}</h3>
-                    <p><del>${{ product.price }}</del>${{ product.get_flash_sale_price }}</p>
-                    <p id="countdown-{{ product.id }}"></p>
-                    <script>
-                        startCountdown("{{ product.flash_sale_end|date:'Y-m-d H:i:s' }}", "countdown-{{ product.id }}");
-                    </script>
+                    <p><del>ksh {{ product.price }}</del>ksh {{ product.get_flash_sale_price }}</p>
+                    <p>{{ product.get_flash_sale_countdown }}</p>
+                    <!--<script>
+                        startCountdown("{{ product.flash_sale_end_time|date:'Y-m-d H:i:s' }}", "countdown-{{ product.id }}");
+                    </script> -->
                     </div>
                 </div>
             {% endfor %}
