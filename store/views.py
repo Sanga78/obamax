@@ -17,7 +17,7 @@ def index(request):
     data = cartData(request)
     cartItems = data['cartItems']
     products = Product.objects.all()
-    flash_sales = Product.objects.filter(flash_sale_end__gt=timezone.now())
+    flash_sales = Product.objects.filter(flash_sale_end_time__gt=timezone.now())
     for product in flash_sales:
         print(product.name)
     context = {'products': products, 'cartItems': cartItems, 'flash_sales': flash_sales}
