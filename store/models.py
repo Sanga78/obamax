@@ -3,10 +3,10 @@ from django.db import models
 from django.utils import timezone
 from decimal import Decimal
 from django.contrib.auth.models import User
+from datetime import datetime, timedelta
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
 
     def __str__(self):
         return self.name
@@ -20,7 +20,8 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='products/')
     digital = models.BooleanField(default=False, null=True, blank=False)
     flash_sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    flash_sale_end = models.DateTimeField(null=True, blank=True)
+    flash_sale_start_time = models.DateTimeField(null=True, blank=True)
+    flash_sale_end_time = models.DateTimeField(null=True, blank=True)
     discount_percentage = models.FloatField(default=0)
 
     def __str__(self):
@@ -36,7 +37,7 @@ class Product(models.Model):
     
     @property
     def get_flash_sale_price(self):
-        if self.flash_sale_price and self.flash_sale_end and self.flash_sale_end > timezone.now():
+        if self.flash_sale_price and self.flash_sale_end_time and self.flash_sale_end_time > timezone.now():
             return self.flash_sale_price
         return self.price
 
@@ -45,7 +46,15 @@ class Product(models.Model):
         if self.discount_percentage > 0:
             return self.price * Decimal(1 - self.discount_percentage / 100)
         return self.price
-
+    @property
+    def get_flash_sale_countdown(self):
+        if self.flash_sale_price and self.flash_sale_end_time and self.flash_sale_end_time > timezone.now():
+            time_remaining = self.flash_sale_end_time - timezone.now()
+            hours, remainder = divmod(time_remaining.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+        else:
+            return None
 
 class Accesory(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
