@@ -260,3 +260,28 @@ def update_profile(request):
         customer.save()
 
     return HttpResponseRedirect("profile")
+
+
+# ADMIN VIEWS
+def admin_home(request):
+    products = Product.objects.all()
+    customers = Customer.objects.all()
+    context ={
+        "products": products,
+        "customers": customers,    
+    }
+    return render(request,"admin/home.html",context)
+
+def admin_view_products(request):
+    products = Product.objects.all()
+    context ={
+        "products": products,
+    }
+    return render(request,"admin/products.html",context)
+
+def admin_view_customers(request):
+    customers = Customer.objects.all()
+    context ={
+        "customers": customers,
+    }
+    return render(request,"admin/customers.html",context)
