@@ -1,0 +1,49 @@
+{% extends 'admin/base.html' %}
+{% block main_content%}
+    <div class="details" style=" display: grid;
+  grid-template-columns: 1fr;">
+        <div class="recentOrders">
+            <div class="cardHeader">
+                <h2>All Products</h2>
+                <a href="#" class="btn">Add</a>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Category</td>
+                        <td>Price</td>
+                        <td>Payment</td>
+                        <td>Discount</td>
+                        <td>Stock</td>
+                        <td>Edit</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category.name }}</td>
+                        {% if product.discount_percentage > 0 %}
+                            <td><del>ksh {{ product.price }}</del></td>
+                        {% else %}
+                            <td>ksh {{ product.price }}</td>
+                        {% endif %}
+                        <td>Paid</td>
+                        {% if product.discount_percentage > 0 %}
+                            <td>ksh {{ product.get_discount_price|floatformat:2 }}</td>
+                        {% else %}
+                            <td>ksh 0.00</td>
+                        {% endif %}
+                        <td>{{ product.stock }}</td>
+                        <td><span class="status delivered">Edit</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock main_content%}

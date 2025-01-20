@@ -1,0 +1,36 @@
+{% extends 'admin/base.html' %}
+{% block main_content%}
+    <div class="details" style=" display: grid;
+  grid-template-columns: 1fr;">
+        <div class="recentOrders">
+            <div class="cardHeader">
+                <h2>All Customers</h2>
+                <a href="#" class="btn">Add New</a>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Name</td>
+                        <td>Email</td>
+                        <td>Contact</td>
+                        <td>Edit</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.user.id }}</td>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.phone_no }}</td>
+                        <td>Activate</td>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock main_content%}
