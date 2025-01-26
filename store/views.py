@@ -12,6 +12,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .forms import ProductForm
 # Create your views here.
 def index(request):
     data = cartData(request)
@@ -274,8 +275,10 @@ def admin_home(request):
 
 def admin_view_products(request):
     products = Product.objects.all()
+    form = ProductForm()
     context ={
         "products": products,
+        "form":form,
     }
     return render(request,"admin/products.html",context)
 
