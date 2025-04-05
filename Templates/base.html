@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ecomart Accessories</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" crossorigin="anonymous"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <script src="{% static 'js/navbar.js' %}" defer></script>
     <script type="text/javascript">
@@ -69,18 +70,18 @@
                 <ul>
                     <li>
                         <a href="{% url 'store:home_page' %}">
-                            <img src="{% static "images/Home.png" %}" alt="Home" class="nav-icon"> Home
+                            <i class="fa-solid fa-house" class="nav-icon"></i> Home
                         </a>
                     </li>
                     <li>
                         <a href="{% url "store:about" %}">
-                            <img src="{% static "images/about.png" %}" alt="Home" class="nav-icon"> About Us
+                            <i class="fa-solid fa-info" class="nav-icon"></i>About Us
                         </a>
                     </li>
                     <li>
                         <div class="dropdown">
                             <button class="dropbtn">
-                                <img src="{% static "images/arrow-down.png" %}" alt="" class="nav-icon" style="height: 10px; width: 12px;"> Categories
+                                <i class="fa-solid fa-caret-down" class="nav-icon"></i> Categories
                             </button>
                             <div class="dropdown-content">
                                     <a href="{% url 'store:category' 'Laptop' %}">Laptops</a>
@@ -91,18 +92,18 @@
                     </li>
                     <li>
                         <a href="{% url "store:contact" %}">
-                            <img src="{% static "images/contact.png" %}" alt="Home" class="nav-icon">Contact Us
+                            <i class="fa-solid fa-phone" class="nav-icon"></i>Contact Us
                         </a>
                     </li>
                 </ul>   
             </div>
             <div class="icons">
                 <div class="login-icon">
-                    <img src="{% static 'images/search.png' %}" alt="" id="search-btn">
+                    <i class="fa-solid fa-search" id="search-btn"></i>
                 </div>
                 <div class="dropdown">
                     <button class="dropbtn">
-                        <img src="{% static 'images/account.png' %}" alt="Account" class="nav-icon">
+                        <i class="fa-solid fa-user-plus" class="nav-icon"></i>
                     </button>
                     <div class="dropdown-content">
                         {% if user.is_authenticated %}
@@ -115,7 +116,7 @@
                     </div>
                 </div>
                 <a href="{% url 'store:cart' %}">
-                    <img src="{% static 'images/cart.png' %}" alt="Cart" class="nav-icon" id="cart-icon">
+                    <i class="fa-solid fa-cart-shopping" class="nav-icon" id="cart-icon"></i>
 	    	    <p id="cart-total-icon">{{cartItems}}</p>
                 </a>
                 <div class="search-form">
