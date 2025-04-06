@@ -1,54 +1,218 @@
 {% extends 'admin/base.html' %}
-{% block main_content%}
-    <div class="details" style=" display: grid;
-  grid-template-columns: 1fr;">
-        <div class="recentOrders">
-            <div class="cardHeader">
-                <h2>All Customers</h2>
-                <a href="#" class="btn">Add New</a>
+{% block main_content %}
+<div class="container-fluid">
+    <h2 class="mb-3">All Customers</h2>
+    
+    <div class="row">
+        <div class="col-lg-3">
+            <button type="button" class="btn btn-info btn-icon-split mb-4" data-toggle="modal" data-target="#addCustomerModal">
+                <span class="icon text-white-600">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                <span class="text">Add New Customer</span>
+            </button>
+        </div>
+        <div class="col-lg-5 offset-lg-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="section__container booking__container">
-                <form action="/" class="booking__form">
-                    <div class="input__group">
-                        <div>
-                            <label for="name">Name</label>
-                            <input type="text" placeholder="Customer Name">
-                        </div>
-                    </div>
-                    <div class="input__group">
-                        <div>
-                            <label for="email">Email</label>
-                            <input type="email" placeholder="Email">
-                        </div>
-                    </div>
-                    <div class="input__group input__btn">
-                        <button class="btn">ADD</button>
-                    </div>
-                </form>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <td>ID</td>
-                        <td>Name</td>
-                        <td>Email</td>
-                        <td>Contact</td>
-                        <td>Edit</td>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for customer in customers %}
-                    <tr>
-                        <td>{{ customer.user.id }}</td>
-                        <td>{{ customer.name }}</td>
-                        <td>{{ customer.email }}</td>
-                        <td>{{ customer.phone_no }}</td>
-                        <td>Activate</td>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% endfor %}
         </div>
     </div>
 
-{% endblock main_content%}
+    <!-- Customers Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Customers Details</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ customer.name }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.phone_no|default:"-" }}</td>
+                            <td>
+                                {%if customer.status == 1 %}
+                                <a href="{% url 'store:admin_view_customers' %}?inid={{customer.id}}" onclick="return confirm('Are you sure you want to inactivate this customer?');"" > <i class="fa fa-check" style="color:green" title="Inactive"></i>Active</a>
+                                    {%else%}
+                                <a href="{% url 'store:admin_view_customers' %}?id={{customer.id}}" onclick="return confirm('Are you sure you want to activate this customer?');""><i class="fa fa-times-circle" style="color:red" title="Active"></i>Inactive</a>
+                                {%endif%} 
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-circle" data-toggle="modal" data-target="#editCustomerModal{{ customer.id }}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <a href="" 
+                                   class="btn btn-danger btn-circle" 
+                                   onclick="return confirm('Deleted Customer will be lost forever. Still want to delete?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Username</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger">{{ form.username.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Email</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Phone Number</label>
+                                {{ form.phone_no }}
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Password</label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="text-danger">{{ form.password1.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Confirm Password</label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="text-danger">{{ form.password2.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Customer Modals -->
+{% for customer in customers %}
+<div class="modal fade" id="editCustomerModal{{ customer.id }}" tabindex="-1" aria-labelledby="editCustomerModalLabel{{ customer.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editCustomerModalLabel{{ customer.id }}">Edit Customer: {{ customer.name }}</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'store:edit_customer' customer.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">First Name</label>
+                                <input type="text" name="first_name" class="form-control" 
+                                       value="{{ customer.user.first_name }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" 
+                                       value="{{ customer.user.last_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Email</label>
+                                <input type="email" name="email" class="form-control" 
+                                       value="{{ customer.email }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Phone Number</label>
+                                <input type="text" name="phone_no" class="form-control" 
+                                       value="{{ customer.phone_no|default_if_none:'' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn{{ customer.id }}">
+                        <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script>
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const email = form.querySelector('input[name="email"]');
+            if (!email.value.includes('@')) {
+                e.preventDefault();
+                alert('Please enter a valid email address');
+                email.focus();
+            }
+        });
+    });
+</script>
+<script>
+    document.getElementById('submitBtn{{ customer.id }}').addEventListener('click', function() {
+        this.querySelector('.spinner-border').classList.remove('d-none');
+        this.disabled = true;
+    });
+    </script>
+{% endblock %}

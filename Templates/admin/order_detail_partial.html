@@ -1,0 +1,121 @@
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Order #{{ order.id }}</h5>
+    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h6 class="font-weight-bold">Customer Information</h6>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {% if order.customer %}
+                        <p class="mb-1"><strong>Name:</strong> {{ order.customer.name }}</p>
+                        <p class="mb-1"><strong>Email:</strong> {{ order.customer.email }}</p>
+                        <p class="mb-1"><strong>Phone:</strong> {{ order.customer.phone_no }}</p>
+                    {% else %}
+                        <p class="mb-1">Guest Customer</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h6 class="font-weight-bold">Order Details</h6>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="mb-1"><strong>Date:</strong> {{ order.date_ordered|date:"M d, Y H:i" }}</p>
+                    <p class="mb-1"><strong>Status:</strong> 
+                        <span class="badge {% if order.complete %}badge-success{% else %}badge-warning{% endif %}">
+                            {% if order.complete %}Completed{% else %}Pending{% endif %}
+                        </span>
+                    </p>
+                    <p class="mb-1"><strong>Transaction ID:</strong> {{ order.transaction_id|default:"-" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if order.shippingaddress %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h6 class="font-weight-bold">Shipping Address</h6>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="mb-1">{{ order.shippingaddress.address }}</p>
+                    <p class="mb-1">{{ order.shippingaddress.city }}, {{ order.shippingaddress.state }}</p>
+                    <p class="mb-1">{{ order.shippingaddress.zipcode }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <h6 class="font-weight-bold">Order Items</h6>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Product</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td class="text-center">Ksh {{ item.product.price }}</td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                    <td class="text-right">Ksh {{ item.get_total }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="table-active">
+                    <td colspan="3" class="text-right font-weight-bold">Subtotal:</td>
+                    <td class="text-right font-weight-bold">Ksh {{ order.get_cart_total }}</td>
+                </tr>
+                <tr class="table-active">
+                    <td colspan="3" class="text-right font-weight-bold">Shipping:</td>
+                    <td class="text-right font-weight-bold">Ksh {% if order.shipping %}50.00{% else %}0.00{% endif %}</td>
+                </tr>
+                <tr class="table-active">
+                    <td colspan="3" class="text-right font-weight-bold">Grand Total:</td>
+                    <td class="text-right font-weight-bold">Ksh {{ order.get_cart_total|add:50 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    {% if not order.complete %}
+    <button type="button" class="btn btn-success" id="completeOrderBtn" data-order-id="{{ order.id }}">
+        <i class="fas fa-check-circle mr-1"></i> Mark as Completed
+    </button>
+    {% endif %}
+</div>
+<script>
+    $(document).ready(function() {
+        // Handle complete order button
+        $('#completeOrderBtn').click(function() {
+            const orderId = $(this).data('order-id');
+            $.ajax({
+                url: `/admin/orders/${orderId}/complete/`,
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if(response.success) {
+                        location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error completing order');
+                }
+            });
+        });
+    });
+    </script>

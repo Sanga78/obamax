@@ -1,5 +1,48 @@
 {% extends 'admin/base.html' %}
+{%load static%}
 {% block main_content%}
+    <!-- ======================= Cards ================== -->
+    <div class="cardBox">
+        <div class="card">
+            <div>
+                <div class="numbers">{{ daily_sales }}</div>
+                <div class="cardName">Daily sales</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="eye-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers">{{ total_orders }}</div>
+                <div class="cardName">Orders</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="cart-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers">{{ total_reviews }}</div>
+                <div class="cardName">Customer Reviews</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers">${{ total_earnings }}</div>
+                <div class="cardName">Total Earning</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="cash-outline"></ion-icon>
+            </div>
+        </div>
+    </div>
 
     <!-- ================ Order Details List ================= -->
     <div class="details">
@@ -12,69 +55,32 @@
             <table>
                 <thead>
                     <tr>
-                        <td>Name</td>
-                        <td>Price</td>
-                        <td>Payment</td>
+                        <td>Order ID</td>
+                        <td>Customer</td>
+                        <td>Total</td>
+                        <td>Date</td>
                         <td>Status</td>
                     </tr>
                 </thead>
 
                 <tbody>
+                    {% for order in orders %}
                     <tr>
-                        <td>Star Refrigerator</td>
-                        <td>$1200</td>
-                        <td>Paid</td>
-                        <td><span class="status delivered">Delivered</span></td>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.customer.name|default:"Guest" }}</td>
+                        <td>${{ order.get_cart_total }}</td>
+                        <td>{{ order.date_ordered|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="status {% if order.complete %}delivered{% else %}pending{% endif %}">
+                                {% if order.complete %}Completed{% else %}Pending{% endif %}
+                            </span>
+                        </td>
                     </tr>
-
+                    {% empty %}
                     <tr>
-                        <td>Dell Laptop</td>
-                        <td>$110</td>
-                        <td>Due</td>
-                        <td><span class="status pending">Pending</span></td>
+                        <td colspan="5">No recent orders</td>
                     </tr>
-
-                    <tr>
-                        <td>Apple Watch</td>
-                        <td>$1200</td>
-                        <td>Paid</td>
-                        <td><span class="status return">Return</span></td>
-                    </tr>
-
-                    <tr>
-                        <td>Addidas Shoes</td>
-                        <td>$620</td>
-                        <td>Due</td>
-                        <td><span class="status inProgress">In Progress</span></td>
-                    </tr>
-
-                    <tr>
-                        <td>Star Refrigerator</td>
-                        <td>$1200</td>
-                        <td>Paid</td>
-                        <td><span class="status delivered">Delivered</span></td>
-                    </tr>
-
-                    <tr>
-                        <td>Dell Laptop</td>
-                        <td>$110</td>
-                        <td>Due</td>
-                        <td><span class="status pending">Pending</span></td>
-                    </tr>
-
-                    <tr>
-                        <td>Apple Watch</td>
-                        <td>$1200</td>
-                        <td>Paid</td>
-                        <td><span class="status return">Return</span></td>
-                    </tr>
-
-                    <tr>
-                        <td>Addidas Shoes</td>
-                        <td>$620</td>
-                        <td>Due</td>
-                        <td><span class="status inProgress">In Progress</span></td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -86,77 +92,22 @@
             </div>
 
             <table>
+                {% for customer in customers %}
                 <tr>
                     <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
+                        <div class="imgBx">
+                            <img src="{% static 'assets/imgs/customer0'|add:forloop.counter|add:'2.jpg' %}" alt="">
+                        </div>
                     </td>
                     <td>
-                        <h4>David <br> <span>Italy</span></h4>
+                        <h4>{{ customer.name }} <br> <span>{{ customer.email }}</span></h4>
                     </td>
                 </tr>
-
+                {% empty %}
                 <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
+                    <td colspan="2">No recent customers</td>
                 </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
-                </tr>
+                {% endfor %}
             </table>
         </div>
     </div>

@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from store.utils import cartData, guestOrder
-# from .models import Accesory, Cart, CartItem, Order, OrderItem, Product
+from django.db.models import Sum,F
 from .models import Accesory, Category, Customer, Order, OrderItem, Product, ShippingAddress
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -12,7 +12,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import ProductForm
+from .forms import CategoryForm, CustomerCreationForm, ProductForm
+from django.views.decorators.http import require_POST
 # Create your views here.
 def index(request):
     data = cartData(request)
@@ -265,14 +266,29 @@ def update_profile(request):
 
 # ADMIN VIEWS
 def admin_home(request):
-    products = Product.objects.all()
-    customers = Customer.objects.all()
-    context ={
+    products = Product.objects.all().order_by('-id')[:10]
+    customers = Customer.objects.all().order_by('-id')[:8]
+    orders = Order.objects.filter(complete=True).order_by('-date_ordered')[:8]
+    
+    today = timezone.now().date()
+    daily_sales = Order.objects.filter(
+        date_ordered__date=today,
+        complete=True
+    ).count()
+    
+    total_orders = Order.objects.filter(complete=True).count()
+    
+    total_earnings = sum(order.get_cart_total for order in Order.objects.filter(complete=True))
+    context = {
         "products": products,
-        "customers": customers,    
+        "customers": customers,
+        "orders": orders,
+        "daily_sales": daily_sales,
+        "total_orders": total_orders,
+        "total_earnings": f"{total_earnings:,.2f}",
+        "total_reviews": 284, 
     }
-    return render(request,"admin/home.html",context)
-
+    return render(request, "admin/home.html", context)
 def admin_view_products(request):
     products = Product.objects.all()
     form = ProductForm()
@@ -284,7 +300,176 @@ def admin_view_products(request):
 
 def admin_view_customers(request):
     customers = Customer.objects.all()
+    form = CustomerCreationForm()
+
+    if request.method == "POST":
+        form = CustomerCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Customer added successfully!")
+            return redirect("store:admin_view_customers")
+        else:
+            messages.error(request, "There was an error adding the Customer. Please check the form.")
+         
+    if 'inid' in request.GET:
+        customer_id = request.GET['inid']
+        customer = get_object_or_404(Customer, pk=customer_id)
+        customer.status = False
+        customer.save()
+        messages.error(request, f"{customer.user.first_name} {customer.user.last_name} Has beed deactivated!")
+        return redirect('store:admin_view_customers')
+
+    if 'id' in request.GET:
+        customer_id = request.GET['id']
+        customer = get_object_or_404(Customer, pk=customer_id)
+        customer.status = True
+        customer.save()
+        messages.success(request, f"{customer.user.first_name} {customer.user.last_name} Has beed Activated!")
+
+        return redirect('store:admin_view_customers')
     context ={
         "customers": customers,
+        "form": form,
     }
     return render(request,"admin/customers.html",context)
+
+def edit_customer(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    
+    if request.method == 'POST':
+        try:
+            # Update User model fields
+            user = customer.user
+            user.first_name = request.POST.get('first_name', '')
+            user.last_name = request.POST.get('last_name', '')
+            user.save()
+            
+            # Update Customer model fields
+            customer.email = request.POST.get('email', '')
+            customer.phone_no = request.POST.get('phone_no', '')
+            customer.name = f"{user.first_name} {user.last_name}"
+            customer.save()
+            
+            messages.success(request, f'Customer {customer.name} updated successfully!')
+            return redirect('store:admin_view_customers')
+            
+        except Exception as e:
+            messages.error(request, f'Error updating customer: {str(e)}')
+            return redirect('store:admin_view_customers')
+    
+    # If GET request, redirect to customer list (the modal will handle display)
+    return redirect('store:admin_view_customers')
+
+
+def admin_view_products(request):
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    return render(request, 'admin/products.html', {
+        'products': products,
+        'categories': categories,
+        'form': ProductForm(),
+        'category_form': CategoryForm()
+    })
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product added successfully!')
+            return redirect('store:admin_view_products')
+        else:
+            messages.error(request, 'Error adding product. Please check the form.')
+    return redirect('store:admin_view_products')
+
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product updated successfully!')
+            return redirect('store:admin_view_products')
+        else:
+            messages.error(request, 'Error updating product. Please check the form.')
+    
+    # GET request will be handled by the modal
+    return redirect('store:admin_view_products')
+
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category added successfully!')
+        else:
+            messages.error(request, 'Error adding category. Please check the form.')
+    return redirect('store:admin_view_products')
+
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category updated successfully!')
+        else:
+            messages.error(request, 'Error updating category. Please check the form.')
+    return redirect('store:admin_view_products')
+
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    try:
+        category.delete()
+        messages.success(request, 'Category deleted successfully!')
+    except Exception as e:
+        messages.error(request, f'Error deleting category: {str(e)}')
+    return redirect('store:admin_view_products')
+
+
+def admin_view_orders(request):
+    orders = Order.objects.annotate(
+        total_value=Sum(F('orderitem__product__price') * F('orderitem__quantity')),
+        item_count=Sum('orderitem__quantity')
+    ).order_by('-date_ordered')
+    
+    # Calculate summary statistics
+    today = timezone.now().date()
+    recent_orders = orders.filter(date_ordered__date=today)
+    total_revenue = orders.aggregate(total=Sum('total_value'))['total'] or 0
+    
+    context = {
+        'orders': orders,
+        'recent_orders_count': recent_orders.count(),
+        'total_revenue': total_revenue,
+        'today': today,
+    }
+    return render(request, 'admin/orders.html', context)
+
+def order_detail(request, order_id):
+    order = get_object_or_404(
+        Order.objects.select_related('customer', 'shippingaddress')
+                    .prefetch_related('orderitem_set__product'), 
+        id=order_id
+    )
+    
+    order_items = order.orderitem_set.all()
+    context = {
+        'order': order,
+        'order_items': order_items,
+    }
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render(request, 'admin/order_detail_partial.html', context)
+    
+    return render(request, 'admin/order_detail.html', context)
+
+@require_POST
+def complete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if not order.complete:
+        order.complete = True
+        order.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Order already completed'})

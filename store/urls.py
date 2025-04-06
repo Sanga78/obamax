@@ -20,6 +20,15 @@ urlpatterns = [
 
 
     path('admin_home',views.admin_home,name='admin_home'),
-    path('products',views.admin_view_products,name='admin_view_products'),
+    path('admin_view_products', views.admin_view_products, name='admin_view_products'),
+    path('add_product', views.add_product, name='add_product'),
+    path('products/<int:product_id>/edit/', views.edit_product, name='edit_product'),
+    path('add_category', views.add_category, name='add_category'),
+    path('categories/<int:category_id>/edit/', views.edit_category, name='edit_category'),
+    path('categories/<int:category_id>/delete/', views.delete_category, name='delete_category'),
     path('customers',views.admin_view_customers,name='admin_view_customers'),
+    path('edit_customer/<int:customer_id>/', views.edit_customer, name='edit_customer'),
+    path('orders/', views.admin_view_orders, name='admin_view_orders'),
+    path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
+    path('orders/<int:order_id>/complete/', views.complete_order, name='complete_order'),
 ]

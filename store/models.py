@@ -101,6 +101,7 @@ class Customer(models.Model):
     phone_no = models.CharField(max_length=20, blank=True, null=True)
     name = models.CharField(max_length= 200,null=True)
     email = models.CharField(max_length=200, null=True)
+    status = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

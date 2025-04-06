@@ -1,0 +1,83 @@
+{% load static %}
+<!-- =============== Navigation ================ -->
+<div class="navigation">
+    <ul class="metismenu" id="menu">
+        <li class="{% if request.resolver_match.url_name == 'store:admin_home' %}active{% endif %}">
+            <a href="{% url 'store:admin_home' %}">
+                <span class="icon">
+                    <ion-icon name="logo-apple"></ion-icon>
+                </span>
+                <span class="title">Ecomart</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="{% url 'store:admin_home' %}">
+                <span class="icon">
+                    <ion-icon name="home-outline"></ion-icon>
+                </span>
+                <span class="title">Admin Dashboard</span>
+            </a>
+        </li>
+        
+        <li class="{% if request.resolver_match.url_name == 'store:admin_view_products' %}active{% endif %}">
+            <a href="{% url 'store:admin_view_products' %}">
+                <span class="icon">
+                    <ion-icon name="cube-outline"></ion-icon>
+                </span>
+                <span class="title">Products</span>
+            </a>
+        </li>
+
+        <li class="{% if request.resolver_match.url_name == 'store:admin_view_customers' %}active{% endif %}">
+            <a href="{% url 'store:admin_view_customers' %}">
+                <span class="icon">
+                    <ion-icon name="people-outline"></ion-icon>
+                </span>
+                <span class="title">Customers</span>
+            </a>
+        </li>
+        <li class="{% if request.resolver_match.url_name == 'store:admin_view_orders' %}active{% endif %}">
+            <a href="{% url 'store:admin_view_orders' %}">
+                <span class="icon">
+                    <ion-icon name="help-outline"></ion-icon>
+                </span>
+                <span class="title">Orders</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon">
+                    <ion-icon name="chatbubble-outline"></ion-icon>
+                </span>
+                <span class="title">Messages</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span class="icon">
+                    <ion-icon name="settings-outline"></ion-icon>
+                </span>
+                <span class="title">Settings</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <span class="icon">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                </span>
+                <span class="title">Password</span>
+            </a>
+        </li>
+        
+        <li>
+            <a href="#">
+                <span class="icon">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                </span>
+                <span class="title">Sign Out</span>
+            </a>
+        </li>
+    </ul>
+</div>
