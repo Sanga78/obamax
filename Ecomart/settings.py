@@ -136,3 +136,4 @@ MEDIA_ROOT = 'media'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = reverse_lazy('login')
+os.environ['DJANGO_SUPERUSER_PASSWORD'] = os.getenv('SUPERUSER_PASSWORD')

@@ -12,4 +12,10 @@ python manage.py collectstatic --no-input
 python manage.py migrate
 
 # Create superuser
-python manage.py createsuperuser --username "$DJANGO_SUPERUSER_USERNAME" --email "$DJANGO_SUPERUSER_EMAIL" --password "$DJANGO_SUPERUSER_PASSWORD"
+if [ "$CREATE_SUPERUSER" = "true" ]; then
+  export DJANGO_SUPERUSER_PASSWORD="$SUPERUSER_PASSWORD"
+  python manage.py createsuperuser \
+      --noinput \
+      --username "$SUPERUSER_USERNAME" \
+      --email "$SUPERUSER_EMAIL" || true
+fi
