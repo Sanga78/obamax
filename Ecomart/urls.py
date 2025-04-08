@@ -25,7 +25,7 @@ urlpatterns = [
     path('', include('store.urls', namespace='store')),
     path('register', store_views.register, name='register'),
     path('login',store_views.login_request,name='login'),
-    path('logout/',store_views.logout_request,name='logout'),
+    path('logout',store_views.logout,name='logout'),
 ]
 
 if settings.DEBUG:

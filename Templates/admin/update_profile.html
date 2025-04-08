@@ -1,0 +1,118 @@
+{% extends 'admin/base.html' %}
+{% block main_content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <!-- Messages -->
+            <div class="px-3 pt-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3 p-3 shadow-sm">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Profile Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h4 class="header-title mb-0">Update Profile</h4>
+                </div>
+                
+                <form method="POST" class="card-body">
+                    {% csrf_token %}
+                    
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" 
+                               id="first_name" 
+                               name="first_name" 
+                               class="form-control" 
+                               value="{{ user.first_name }}" 
+                               required>
+                    </div>
+                    
+                    <!-- Last Name -->
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" 
+                               id="last_name" 
+                               name="last_name" 
+                               class="form-control" 
+                               value="{{ user.last_name }}" 
+                               required>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            New Password <span class="text-muted small">(leave blank to keep current)</span>
+                        </label>
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="form-control" 
+                               autocomplete="off">
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid pt-1">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles to match dashboard */
+    .card {
+        border-radius: 12px;
+        border: none;
+        background: var(--white);
+    }
+    
+    .card-header {
+        padding: 1.25rem 1.25rem 0;
+    }
+    
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    .form-control {
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid var(--black2);
+        font-size: 0.925rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: var(--black1);
+        font-size: 0.925rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.925rem;
+    }
+    
+    .header-title {
+        color: var(--blue);
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    
+    .alert {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+    }
+</style>
+{% endblock %}

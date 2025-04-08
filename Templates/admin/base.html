@@ -14,40 +14,12 @@
 </head>
 
 
-<body>
-    <div class="page-container">
-        <div class="sidebar-menu">
-                    {% include 'admin/sidebar.html' %}
-        </div>
-          <!-- ========================= Topbar ==================== -->
-          <div class="main-content">
-            <div class="topbar">
-                <div class="toggle">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
-            
-                <!-- Search Bar -->
-                <div class="search">
-                    <div class="input-group search-container">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text bg-white border-0">
-                                <ion-icon name="search-outline" class="text-muted"></ion-icon>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control border-0 shadow-none search-input" 
-                            placeholder="Search..." aria-label="Search">
-                    </div>
-                </div>
-            
-                <div class="user">
-                    <img src="{% static 'assets/imgs/customer01.jpg' %}" alt="User" class="user-avatar">
-                </div>
-            </div>
-          </div>
-           
-        <!-- ========================= Main ==================== -->
+<body class="p-0 m-0">
+    <div class="container-fluid p-0 m-0"> <!-- Use container-fluid and remove padding/margin -->
+        {% include 'admin/sidebar.html' %}
         <div class="main">
-            {% block main_content %}{% endblock main_content %}
+            {% include 'admin/topbar.html' %}
+            {% block main_content %}{% endblock %}
         </div>
     </div>
     <script>

@@ -3,17 +3,19 @@ import json
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from store.decorators import login_required_superadmin_required
 from store.utils import cartData, guestOrder
 from django.db.models import Sum,F
 from .models import Accesory, Category, Customer, Order, OrderItem, Product, ShippingAddress
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CategoryForm, CustomerCreationForm, ProductForm
 from django.views.decorators.http import require_POST
+from django.contrib import auth
 # Create your views here.
 def index(request):
     data = cartData(request)
@@ -72,38 +74,6 @@ def search(request):
             return render(request, "search.html", {'products':products})        
     else:
         return HttpResponse("<h2>Method Not Allowed</h2>")
-#cart views
-# @login_required
-# def add_to_cart(request,product_id):
-#     product = get_object_or_404(Product,id=product_id)
-#     cart, created = Cart.objects.get_or_create(user= request.user)
-#     cart_item, created = CartItem.objects.get_or_create(cart=cart,product=product)
-#     if not created:
-#         cart_item.quantity +=1 
-#     cart_item.save()
-#     return redirect('store:cart_detail')
-
-# @login_required
-# def cart_detail(request):
-#     cart, created = Cart.objects.get_or_create(user=request.user)
-#     cart_items = CartItem.objects.filter(cart=cart)
-#     total_price = sum(item.get_total_price() for item in cart_items)
-#     return render(request,"cart_detail.html",{'cart_items':cart_items,'total_price':total_price})
-
-# @login_required
-# def checkout(request):
-#     cart, created = Cart.objects.get_or_create(user=request.user)
-#     cart_items = CartItem.objects.filter(cart=cart)
-#     total_price = sum(item.get_total_price() for item in cart_items)
-#     if request.method == 'POST':
-#         order = Order.objects.create(user=request.user,total_price=total_price)
-#         for item in cart_items:
-#             OrderItem.objects.create(order=order,product=item.product,quantity=item.quantity)
-#         cart_items.delete()
-#         return redirect('order_detail',order_id=order.id)     
-#     return render(request,"check.html",{'cart_items':cart_items,'total_price':total_price})
-
-
 
 def cart(request):
     data = cartData(request)
@@ -180,6 +150,7 @@ def processOrder(request):
 
 #AUTHENTICATION VIEWS
 def login_request(request):
+    next = request.GET.get('next') or None
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
@@ -188,9 +159,16 @@ def login_request(request):
             user = authenticate(username=username,password=password)
             if user is not None:
                 login(request, user)
-                messages.info(request,f"Logged in Successfully as {username}")
-                customer, created = Customer.objects.get_or_create(user=request.user)
-                return redirect('store:home_page')
+                print("logged in Successfully")
+                if user.is_superuser:
+                    if next:
+                        return redirect(next)
+                    return redirect('store:admin_home') 
+                else:
+                    if next:
+                        return redirect(next)
+                    customer, created = Customer.objects.get_or_create(user=request.user)
+                    return redirect('store:home_page')
             else:
                 messages.info(request,"Account doesn't exists")
                 return redirect('register')
@@ -230,10 +208,6 @@ def register(request):
     else:
         return render(request,'register.html')
 
-def logout_request(request):
-    logout(request)
-    messages.info(request,"Logged out successfully!")
-    return redirect('/')
 
 @login_required
 def profile(request):
@@ -265,6 +239,7 @@ def update_profile(request):
 
 
 # ADMIN VIEWS
+@login_required_superadmin_required
 def admin_home(request):
     products = Product.objects.all().order_by('-id')[:10]
     customers = Customer.objects.all().order_by('-id')[:8]
@@ -289,6 +264,7 @@ def admin_home(request):
         "total_reviews": 284, 
     }
     return render(request, "admin/home.html", context)
+@login_required_superadmin_required
 def admin_view_products(request):
     products = Product.objects.all()
     form = ProductForm()
@@ -297,7 +273,7 @@ def admin_view_products(request):
         "form":form,
     }
     return render(request,"admin/products.html",context)
-
+@login_required_superadmin_required
 def admin_view_customers(request):
     customers = Customer.objects.all()
     form = CustomerCreationForm()
@@ -332,7 +308,7 @@ def admin_view_customers(request):
         "form": form,
     }
     return render(request,"admin/customers.html",context)
-
+@login_required_superadmin_required
 def edit_customer(request, customer_id):
     customer = get_object_or_404(Customer, id=customer_id)
     
@@ -360,7 +336,7 @@ def edit_customer(request, customer_id):
     # If GET request, redirect to customer list (the modal will handle display)
     return redirect('store:admin_view_customers')
 
-
+@login_required_superadmin_required
 def admin_view_products(request):
     products = Product.objects.all()
     categories = Category.objects.all()
@@ -371,6 +347,7 @@ def admin_view_products(request):
         'category_form': CategoryForm()
     })
 
+@login_required_superadmin_required
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -382,6 +359,7 @@ def add_product(request):
             messages.error(request, 'Error adding product. Please check the form.')
     return redirect('store:admin_view_products')
 
+@login_required_superadmin_required
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     
@@ -393,10 +371,9 @@ def edit_product(request, product_id):
             return redirect('store:admin_view_products')
         else:
             messages.error(request, 'Error updating product. Please check the form.')
-    
-    # GET request will be handled by the modal
     return redirect('store:admin_view_products')
 
+@login_required_superadmin_required
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -407,6 +384,7 @@ def add_category(request):
             messages.error(request, 'Error adding category. Please check the form.')
     return redirect('store:admin_view_products')
 
+@login_required_superadmin_required
 def edit_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     if request.method == 'POST':
@@ -418,6 +396,7 @@ def edit_category(request, category_id):
             messages.error(request, 'Error updating category. Please check the form.')
     return redirect('store:admin_view_products')
 
+@login_required_superadmin_required
 def delete_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     try:
@@ -427,14 +406,13 @@ def delete_category(request, category_id):
         messages.error(request, f'Error deleting category: {str(e)}')
     return redirect('store:admin_view_products')
 
-
+@login_required_superadmin_required
 def admin_view_orders(request):
     orders = Order.objects.annotate(
         total_value=Sum(F('orderitem__product__price') * F('orderitem__quantity')),
         item_count=Sum('orderitem__quantity')
     ).order_by('-date_ordered')
     
-    # Calculate summary statistics
     today = timezone.now().date()
     recent_orders = orders.filter(date_ordered__date=today)
     total_revenue = orders.aggregate(total=Sum('total_value'))['total'] or 0
@@ -447,6 +425,7 @@ def admin_view_orders(request):
     }
     return render(request, 'admin/orders.html', context)
 
+@login_required_superadmin_required
 def order_detail(request, order_id):
     order = get_object_or_404(
         Order.objects.select_related('customer', 'shippingaddress')
@@ -473,3 +452,32 @@ def complete_order(request, order_id):
         order.save()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Order already completed'})
+
+@login_required_superadmin_required
+def update_profile2(request):
+    user = request.user 
+    if request.method == "POST":
+        first_name = request.POST.get("first_name", user.first_name)
+        last_name = request.POST.get("last_name", user.last_name)
+        password = request.POST.get("password")
+
+        user.first_name = first_name
+        user.last_name = last_name
+        
+        if password:
+            user.set_password(password)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully!")
+            return redirect("store:update_profile2")
+
+        user.save()
+        messages.success(request, "Profile updated successfully!")
+        return redirect("store:update_profile2")
+
+    return render(request, "admin/update_profile.html", {"user": user ,"title":"Update Profile"})
+
+def logout(request):
+    auth.logout(request)
+    messages.info(request,"Logged out successfully!")
+    return redirect('login')

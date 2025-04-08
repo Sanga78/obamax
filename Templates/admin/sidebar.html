@@ -44,17 +44,17 @@
                 <span class="title">Orders</span>
             </a>
         </li>
-        <li>
+        <!-- <li>
             <a href="#">
                 <span class="icon">
                     <ion-icon name="chatbubble-outline"></ion-icon>
                 </span>
                 <span class="title">Messages</span>
             </a>
-        </li>
+        </li> -->
 
         <li>
-            <a href="#">
+            <a href="{% url 'store:update_profile2' %}">
                 <span class="icon">
                     <ion-icon name="settings-outline"></ion-icon>
                 </span>
@@ -63,7 +63,7 @@
         </li>
 
         <li>
-            <a href="#">
+            <a href="{% url 'store:update_profile2' %}">
                 <span class="icon">
                     <ion-icon name="lock-closed-outline"></ion-icon>
                 </span>
@@ -72,7 +72,7 @@
         </li>
         
         <li>
-            <a href="#">
+            <a href="{% url 'logout' %}">
                 <span class="icon">
                     <ion-icon name="log-out-outline"></ion-icon>
                 </span>
