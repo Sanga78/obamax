@@ -84,11 +84,11 @@
                                 <i class="fa-solid fa-caret-down" class="nav-icon"></i> Categories
                             </button>
                             <div class="dropdown-content">
-                                    <a href="{% url 'store:category' 'Laptop' %}">Laptops</a>
-                                    <a href="{% url 'store:category' 'TVs' %}">Televisions</a>    
-                                    <a href="{% url 'store:category' 'Phones' %}">Phones</a>
+                                {% for category in categories %}
+                                    <a href="{% url 'store:category' category.name %}">{{ category.name }}</a>
+                                {% endfor %}
                             </div>
-                        </div>
+                        </div>                     
                     </li>
                     <li>
                         <a href="{% url "store:contact" %}">
