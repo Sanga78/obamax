@@ -6,14 +6,14 @@ from django.utils import timezone
 from store.decorators import login_required_superadmin_required
 from store.utils import cartData, guestOrder
 from django.db.models import Sum,F
-from .models import Accesory, Category, Customer, Order, OrderItem, Product, ShippingAddress
+from .models import Accesory, Category, Customer, Order, OrderItem, Product, ShippingAddress,ProductReview
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import CategoryForm, CustomerCreationForm, ProductForm
+from .forms import CategoryForm, CustomerCreationForm, ProductForm, ReviewForm
 from django.views.decorators.http import require_POST
 from django.contrib import auth
 # Create your views here.
@@ -27,18 +27,63 @@ def index(request):
     context = {'products': products, 'cartItems': cartItems, 'flash_sales': flash_sales}
     return render(request, "index.html", context)
 
-def product_detail(request,product_id):
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     data = cartData(request)
     cartItems = data['cartItems']
-    product = get_object_or_404(Product,id=product_id)
-    accesories = Accesory.objects.filter(product=product)
-    context = {
-        'product' : product,
-        'accesories' : accesories,
-        'cartItems' : cartItems
-    }
-    return render(request,"product_detail.html", context)
+    related_products = Product.objects.filter(
+        category=product.category
+    ).exclude(id=product.id)[:4]
+    
+    # Handle review submission
+    review_form = None
+    if request.user.is_authenticated:
+        user_review = ProductReview.objects.filter(
+            product=product, 
+            user=request.user
+        ).first()
+        
+        if request.method == 'POST' and 'submit_review' in request.POST:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.product = product
+                review.user = request.user
+                review.save()
+                messages.success(request, 'Review submitted successfully!')
+                return redirect('store:product_detail', product_id=product.id)
+            else:
+                messages.error(request, 'Please correct the errors below.')
+        else:
+            form = ReviewForm()
+    
+    # Get approved reviews
+    reviews = product.reviews.filter(is_approved=True).order_by('-created_at')
+    rating_percentages = {i: product.get_rating_percentage(i) for i in range(1, 6)}
+    user_review = reviews.filter(user=request.user).first() if request.user.is_authenticated else None
 
+    context = {
+        'product': product,
+        'cartItems':cartItems,
+        'related_products': related_products,
+        'reviews': reviews,
+        'review_form': ReviewForm(),
+        'average_rating': product.get_average_rating, 
+        'review_count': reviews.count(),
+        'rating_percentages': rating_percentages,
+        'user_has_reviewed': user_review is not None,
+        'user_review_id': user_review.id if user_review else None,
+    }
+
+    return render(request, 'product_detail.html', context)
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(ProductReview, id=review_id, user=request.user)
+    product_id = review.product.id
+    review.delete()
+    messages.success(request, 'Your review has been deleted.')
+    return redirect('product_detail', product_id=product_id)
 def about_page(request):
     data = cartData(request)
     cartItems = data['cartItems']
@@ -64,6 +109,8 @@ def category(request, name):
 
 #search functionality
 def search(request):
+    data = cartData(request)
+    cartItems = data['cartItems']
     if request.method == 'GET':
         query = request.GET.get('query')
 
@@ -71,7 +118,7 @@ def search(request):
             products = Product.objects.filter(
                 Q(name__icontains=query) | Q(description__icontains=query)
                 )
-            return render(request, "search.html", {'products':products})        
+            return render(request, "search.html", {'products':products,'cartItems':cartItems})        
     else:
         return HttpResponse("<h2>Method Not Allowed</h2>")
 
@@ -97,9 +144,6 @@ def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
     action = data['action']
-
-    print('productId:',productId)
-    print('Action:',action)
 
     customer = request.user.customer
     product = Product.objects.get(id=productId)
@@ -151,6 +195,8 @@ def processOrder(request):
 #AUTHENTICATION VIEWS
 def login_request(request):
     next = request.GET.get('next') or None
+    data = cartData(request)
+    cartItems = data['cartItems']
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
@@ -176,9 +222,12 @@ def login_request(request):
             messages.info(request,'Invalid credentials')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html')
+    context={'cartItems':cartItems}
+    return render(request, 'login.html',context)
 
 def register(request):
+    data = cartData(request)
+    cartItems = data['cartItems']
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -206,8 +255,8 @@ def register(request):
             messages.info(request,'Password Not The Same')
             return redirect('register')
     else:
-        return render(request,'register.html')
-
+        context={'cartItems':cartItems}
+        return render(request,'register.html',context)
 
 @login_required
 def profile(request):

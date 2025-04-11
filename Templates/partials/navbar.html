@@ -1,0 +1,88 @@
+{% load static %}
+<nav class="modern-navbar">
+    <!-- Logo Section -->
+    <div class="navbar-brand">
+        <a href="{% url 'store:home_page' %}">
+            <img src="{% static 'images/logo.png' %}" alt="NovaTech" class="logo">
+            <span class="brand-name">NovaTech</span>
+        </a>
+    </div>
+
+    <!-- Main Navigation -->
+    <div class="navbar-links" id="navbarLinks">
+        <div class="nav-left">
+            <a href="{% url 'store:home_page' %}" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <div class="dropdown">
+                <button class="nav-link dropdown-toggle">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Categories</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </button>
+                <div class="dropdown-menu">
+                    {% for category in categories %}
+                    <a href="{% url 'store:category' category.name %}" class="dropdown-item">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <a href="{% url 'store:about' %}" class="nav-link">
+                <i class="fas fa-info-circle"></i>
+                <span>About</span>
+            </a>
+            <a href="{% url 'store:contact' %}" class="nav-link">
+                <i class="fas fa-phone"></i>
+                <span>Contact</span>
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <form action="{% url 'store:search' %}" method="get">
+                    <input type="text" placeholder="Search products..." name="query">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- User Actions -->
+            <div class="user-actions">
+                {% if user.is_authenticated %}
+                <div class="dropdown user-dropdown">
+                    <button class="user-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="dropdown-menu user-menu">
+                        <a href="{% url 'store:profile' %}" class="dropdown-item">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="{% url 'logout' %}" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="auth-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+                {% endif %}
+
+                <a href="{% url 'store:cart' %}" class="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">{{ cartItems }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+</nav>

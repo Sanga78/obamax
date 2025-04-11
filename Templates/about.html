@@ -1,29 +1,150 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}About Us | NovaTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+<style>
+  .about-hero {
+    background: linear-gradient(rgba(67, 97, 238, 0.7), rgba(67, 97, 238, 0.8)), 
+                url('{% static "images/About.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 8rem 0;
+    text-align: center;
+}
+
+</style>
+{% endblock %}
+
 {% block content %}
-        <section class="about-us">
-            <h1>About Us</h1>
-            <p>Welcome to Ecomart Accessories, your number one source for all things accessories. We're dedicated to providing you the very best of electronic accessories, with an emphasis on quality, customer service, and uniqueness.</p>
-            <p>Founded in 2023, Ecomart Accessories has come a long way from its beginnings. When we first started out, our passion for eco-friendly gadgets drove us to start our own business.</p>
-            <p>We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don't hesitate to contact us.</p>
-            <p>Sincerely, <br>The Ecomart Accessories Team</p>
-        </section>
-        <section class="faq">
-            <h2>Frequently Asked Questions (FAQ)</h2>
-            <div class="faq-item">
-                <h3>What is Ecomart Accessories?</h3>
-                <p>Ecomart Accessories is an online store offering a wide range of electronic accessories, including chargers, cases, headphones, and smart home devices.</p>
+<section class="about-hero">
+    <div class="hero-content">
+        <h1>About NovaTech</h1>
+        <p class="hero-subtitle">Redefining tech experiences since 2024</p>
+    </div>
+</section>
+
+<section class="about-story">
+    <div class="container">
+        <div class="story-grid">
+            <div class="story-content">
+                <h2>Our Story</h2>
+                <p class="lead">What began as a passion for cutting-edge technology has evolved into Nairobi's premier electronics destination.</p>
+                <p>Founded in 2023, NovaTech started as a small boutique tech shop with a simple mission: to make premium electronics accessible to everyone. Today, we serve thousands of customers across Kenya with the latest gadgets, accessories, and smart home solutions.</p>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number">10,000+</span>
+                        <span class="stat-label">Happy Customers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Quality Products</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Customer Support</span>
+                    </div>
+                </div>
             </div>
-            <div class="faq-item">
-                <h3>How can I place an order?</h3>
-                <p>You can place an order through our website by adding products to your cart and proceeding to checkout. Follow the instructions to complete your purchase.</p>
+            <div class="story-image-wrapper">
+                <div class="rounded-image-container">
+                    <img src="{% static 'images/team.jpg' %}" alt="NovaTech team" class="responsive-rounded-image">
+                </div>
             </div>
-            <div class="faq-item">
-                <h3>What payment methods do you accept?</h3>
-                <p>We accept various payment methods including credit/debit cards and Mpesa.</p>
+        </div>
+    </div>
+</section>
+
+<section class="about-values">
+    <div class="container">
+        <h2 class="section-title">Our Core Values</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Quality Assurance</h3>
+                <p>Every product undergoes rigorous testing to ensure it meets our high standards before reaching you.</p>
             </div>
-            <div class="faq-item">
-                <h3>How can I contact customer support?</h3>
-                <p>You can contact our customer support via email, phone, LinkedIn, or WhatsApp. See our contact information in our contacts section.</p>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <h3>Customer First</h3>
+                <p>Your satisfaction guides every decision we make, from product selection to after-sales support.</p>
             </div>
-        </section>
-{% endblock content %}
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Innovation</h3>
+                <p>We stay ahead of the curve to bring you the latest and most innovative tech solutions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-faq">
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">
+                    What makes NovaTech different?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We combine competitive pricing with exceptional service. Our team of tech experts provides personalized recommendations and after-sales support you won't find elsewhere.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    What payment methods do you accept?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We accept all major credit/debit cards, M-Pesa, bank transfers, and PayPal for your convenience.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    How long does delivery take?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Nairobi deliveries arrive within 24 hours. Countrywide shipping takes 2-3 business days. We also offer same-day delivery for urgent orders.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    What's your return policy?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We offer a 14-day no-questions-asked return policy on all products. Simply contact our support team to initiate a return.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-cta">
+    <div class="container">
+        <h2>Ready to Experience the NovaTech Difference?</h2>
+        <div class="cta-buttons">
+            <a href="{% url 'store:contact' %}" class="btn btn-primary">Contact Us</a>
+            <a href="{% url 'store:home_page' %}" class="btn btn-outline">Shop Now</a>
+        </div>
+    </div>
+</section>
+{% block extra_js %}
+<script src="{% static 'js/about.js' %}"></script>
+{% endblock %}
+{% endblock %}

@@ -1,23 +1,148 @@
 {% extends "base.html" %}
-{% block content %}      
-<section class="auth-form">
-    <h2>Login</h2>
-    <form id="login-form" method="post" autocomplete="off">
-        {% csrf_token %}
+{% load static %}
+
+{% block title %}Login | TechNex{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Social Login */
+    .social-login {
+        margin: 1.5rem 0;
+        position: relative;
+    }
+
+    .social-login::before, 
+    .social-login::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #ddd;
+        margin: 0 10px;
+    }
+
+    .social-login-text {
+        padding: 0 1rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .social-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .social-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #ddd;
+        color: #555;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .social-btn.google { color: #DB4437; }
+    .social-btn.facebook { color: #4267B2; }
+    .social-btn.twitter { color: #1DA1F2; }
+</style>
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to access your account</p>
+        </div>
+
         {% if messages %}
             {% for message in messages %}
-            <script>
-                alert("{{message}}")
-            </script>
+            <div class="alert-message {% if message.tags %}{{ message.tags }}{% else %}alert-error{% endif %}">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                {{ message }}
+            </div>
             {% endfor %}
         {% endif %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Login</button>
-    </form>
-        <center><a style="color: blue;" href="" class="text-muted small">Forgot your password?</a></center>
-    <p>Don't have an account? <a href="{% url "register" %}">Sign up</a></p>
-</section>
-{% endblock content %}
+
+        <form id="login-form" method="post" autocomplete="off" class="auth-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+                <a href="" class="password-reset-link">Forgot your password?</a>
+            </div>
+            
+            <button type="submit" class="btn-auth">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+
+        <div class="social-login">
+            <span class="social-login-text">or continue with</span>
+            <div class="social-buttons">
+                <a href="#" class="social-btn google" title="Sign in with Google">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="#" class="social-btn facebook" title="Sign in with Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-btn twitter" title="Sign in with Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{% url 'register' %}">Sign up</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to form elements
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach((control, index) => {
+            control.style.opacity = '0';
+            control.style.transform = 'translateY(20px)';
+            control.style.transition = `all 0.4s ease ${index * 0.1}s`;
+            
+            setTimeout(() => {
+                control.style.opacity = '1';
+                control.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Remove alert after 5 seconds
+        const alertMessage = document.querySelector('.alert-message');
+        if (alertMessage) {
+            setTimeout(() => {
+                alertMessage.style.opacity = '0';
+                setTimeout(() => {
+                    alertMessage.remove();
+                }, 300);
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

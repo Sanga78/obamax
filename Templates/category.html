@@ -1,18 +1,45 @@
 {% extends 'base.html' %}
-{% block content%}
-        <section class="featured-products">
-            <h2>{{category.name}}</h2>
-            <div class="product-grid">
-                <!-- Example product cards -->
-                 {% for product in cat_products %}
-                 <div class="product-card">
-                    <img src="{{ product.imageURL }}" alt="{{ product.name }}">
-                    <h3>{{ product.name }}</h3>
-                    <p>{{ product.price }}</p>
-                    <a href="{% url 'store:product_detail' product.id %}">View Details</a>
-                </div>
-                 {% endfor %}
-                <!-- Add more products as needed -->
+{% load static %}
+{% load humanize %}
+
+{% block title %}Products Categories | NovaTech{% endblock %}
+
+{% block content %}
+<section class="category-section">
+    <div class="category-header">
+        <h1>{{ category.name }}</h1>
+        <p class="category-description">Browse our premium {{ category.name }} collection</p>
+    </div>
+
+    <div class="product-grid">
+        {% for product in cat_products %}
+        <div class="product-card">
+            <div class="product-badge">
+                {% if product.discount_percentage > 0 %}
+                <span class="discount-badge">-{{ product.discount_percentage }}%</span>
+                {% endif %}
+                <span class="new-badge">New</span>
             </div>
-        </section>
-{% endblock content %}
+            <div class="product-image-container">
+                <img src="{{ product.imageURL }}" alt="{{ product.name }}" class="product-image">
+                <button data-product="{{ product.id }}" data-action="add" class="quick-add-btn update-cart">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <div class="price-container">
+                    <span class="current-price">Ksh {{ product.price|floatformat:2|intcomma }}</span>
+                    {% if product.discount_percentage > 0 %}
+                    <span class="original-price">Ksh {{ product.original_price|floatformat:2|intcomma }}</span>
+                    {% endif %}
+                </div>
+                <a href="{% url 'store:product_detail' product.id %}" class="view-details-btn">
+                    View Details <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

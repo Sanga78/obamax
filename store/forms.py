@@ -1,6 +1,6 @@
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
-from .models import Category, Customer, Product
+from .models import Category, Customer, Product,ProductReview
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -68,4 +68,25 @@ class CategoryForm(forms.ModelForm):
         fields = ['name']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = ProductReview
+        fields = ['rating', 'title', 'comment']
+        widgets = {
+            'rating': forms.NumberInput(attrs={
+                'min': 1,
+                'max': 5,
+                'class': 'rating-input'
+            }),
+            'title': forms.TextInput(attrs={
+                'placeholder': 'Summary of your review',
+                'class': 'form-control'
+            }),
+            'comment': forms.Textarea(attrs={
+                'placeholder': 'Write your review here...',
+                'rows': 5,
+                'class': 'form-control'
+            }),
         }

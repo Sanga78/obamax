@@ -1,11 +1,365 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
+{% block title %}Product Details | NovaTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/product-detail.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="product-detail-container">
-    <h2 class="product-name">{{product.name}}</h2>
-    <img class="product-image" src="{{product.imageURL}}" alt="Product Image">
-    <p class="product-price">ksh {{product.price}}</p>
-    <p class="product-description">{{product.description}}Product description goes here...</p>
-    <button data-product="{{product.id}}" data-action="add" class="add-to-cart-button add-btn update-cart">Add to Cart</button>
+<section class="product-detail-section">
+    <div class="product-detail-container">
+        <!-- Product Gallery -->
+        <div class="product-gallery">
+            <div class="main-image-container">
+                <img src="{{ product.imageURL }}" alt="{{ product.name }}" class="main-product-image">
+                {% if product.discount_percentage > 0 %}
+                <span class="discount-badge">-{{ product.discount_percentage }}%</span>
+                {% endif %}
+            </div>
+            
+            <div class="thumbnail-container">
+                <div class="thumbnail active">
+                    <img src="{{ product.imageURL }}" alt="{{ product.name }} thumbnail">
+                </div>
+                <!-- Add more thumbnails here if needed -->
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+            <div class="product-breadcrumbs">
+                <a href="{% url 'store:home_page' %}">Home</a> / 
+                <a href="{% url 'store:category' product.category.name %}">{{ product.category.name }}</a> / 
+                <span>{{ product.name }}</span>
+            </div>
+
+            <h1>{{ product.name }}</h1>
+            
+            <div class="product-meta">
+                <span class="sku">SKU: {{ product.id }}</span>
+                <div class="rating">
+                    <div class="stars" data-rating="{{ product.get_average_rating|floatformat:1 }}">
+                        {% with product.get_average_rating|floatformat:1 as rating %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= rating|add:0 %}
+                                    <i class="fas fa-star"></i>
+                                {% elif forloop.counter|add:-0.5 <= rating|add:0 %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <span class="review-count">({{ product.reviews.count }} review{{ product.reviews.count|pluralize }})</span>
+                    <a href="#reviews" class="write-review">Write a review</a>
+                </div>
+            </div>
+
+            <div class="price-container">
+                <span class="current-price">Ksh {{ product.get_discount_price|floatformat:2|intcomma }}</span>
+                {% if product.discount_percentage > 0 %}
+                <span class="original-price">Ksh {{ product.price|floatformat:2|intcomma }}</span>
+                {% endif %}
+            </div>
+
+            <div class="product-description">
+                <h3>Description</h3>
+                <p>{{ product.description }}</p>
+            </div>
+
+            <div class="product-actions">
+                <div class="quantity-controls">
+                    <button class="quantity-btn decrease"><i class="fas fa-minus"></i></button>
+                    <input type="number" value="1" min="1" class="quantity-input">
+                    <button class="quantity-btn increase"><i class="fas fa-plus"></i></button>
+                </div>
+                <button data-product="{{ product.id }}" data-action="add" class="add-to-cart-btn update-cart">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+                <button class="wishlist-btn">
+                    <i class="far fa-heart"></i> Wishlist
+                </button>
+            </div>
+
+            <div class="product-meta-footer">
+                <div class="meta-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>2-Year Warranty</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Free Shipping Nationwide</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Easy Returns</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Tabs -->
+    <div class="product-tabs">
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="description">Description</button>
+            <button class="tab-btn" data-tab="specifications">Specifications</button>
+            <button class="tab-btn" data-tab="reviews">Reviews ({{ product.reviews.count }})</button>
+        </div>
+        
+        <div class="tabs-content">
+            <div class="tab-pane active" id="description">
+                <h3>Detailed Description</h3>
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <div class="tab-pane" id="specifications">
+                <h3>Technical Specifications</h3>
+                <table class="specs-table">
+                    <tr>
+                        <th>Brand</th>
+                        <td>{{ product.brand|default:"NovaTech" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Model</th>
+                        <td>{{ product.model_number|default:"NT-1000" }}</td>
+                    </tr>
+                    <!-- Add more specs here -->
+                </table>
+            </div>
+            
+            <div class="tab-pane" id="reviews">
+                <div class="product-reviews">
+                    <div class="reviews-header">
+                        <h3>Customer Reviews</h3>
+                        <div class="average-rating">
+                            <span class="rating-value">{{ product.get_average_rating|floatformat:1 }}</span>
+                            <div class="stars">
+                                {% with ''|center:5 as range %}
+                                {% for _ in range %}
+                                    {% if forloop.counter <= product.get_average_rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% elif forloop.counter|add:-0.5 <= product.get_average_rating %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                {% endwith %}
+                            </div>
+                            <span class="review-count">{{ product.reviews.count }} review{{ product.reviews.count|pluralize }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Rating Breakdown -->
+                    <div class="rating-breakdown">
+                        {% for i in "54321" %}
+                        {% with i|add:0 as star_value %}
+                        <div class="rating-bar">
+                            <span class="stars">{{ star_value }} <i class="fas fa-star"></i></span>
+                            <div class="bar-container">
+                                <div class="bar" style="width: {% widthratio product.get_rating_count_for_star star_value 100 %}%"></div>
+                            </div>
+                            <span class="percentage">{% widthratio product.get_rating_count_for_star star_value 100 %}%</span>
+                        </div>
+                        {% endwith %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Review Form -->
+                    {% if request.user.is_authenticated %}
+                    <div class="review-form">
+                        <h4>{% if user_has_reviewed %}Update Your Review{% else %}Write a Review{% endif %}</h4>
+                        <form method="post" action="{% url 'store:product_detail' product.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="submit_review" value="1">
+                            
+                            <div class="form-group">
+                                <label>Your Rating</label>
+                                <div class="star-rating">
+                                    {% for value, text in review_form.rating.field.choices %}
+                                    <input type="radio" id="rating-{{ value }}" name="rating" value="{{ value }}" 
+                                        {% if review_form.rating.value == value %}checked{% endif %}>
+                                    <label for="rating-{{ value }}" title="{{ text }}">★</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="id_title">Review Title</label>
+                                <input type="text" name="title" id="id_title" class="form-control" 
+                                    placeholder="Summary of your review" 
+                                    value="{{ review_form.title.value|default:'' }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="id_comment">Your Review</label>
+                                <textarea name="comment" id="id_comment" class="form-control" 
+                                    rows="5" placeholder="Write your review here..." 
+                                    required>{{ review_form.comment.value|default:'' }}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">
+                                {% if user_has_reviewed %}Update Review{% else %}Submit Review{% endif %}
+                            </button>
+                            
+                            {% if user_has_reviewed %}
+                            <a href="{% url 'store:delete_review' user_review_id %}" 
+                            class="delete-btn" 
+                            onclick="return confirm('Are you sure you want to delete your review?')">
+                                Delete Review
+                            </a>
+                            {% endif %}
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="login-prompt">
+                        <p>Please <a href="{% url 'login' %}?next={% url 'store:product_detail' product.id %}">login</a> to leave a review.</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Reviews List -->
+                    <div class="reviews-list">
+                        {% for review in product.reviews.all %}
+                        <div class="review">
+                            <div class="review-header">
+                                <div class="reviewer">
+                                    <span class="name">{{ review.user.username }}</span>
+                                    <div class="stars">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <span class="date">{{ review.created_at|date:"F j, Y" }}</span>
+                            </div>
+                            
+                            <h5 class="review-title">{{ review.title }}</h5>
+                            <p class="review-text">{{ review.comment }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="no-reviews">
+                            <p>No reviews yet. Be the first to review this product!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <section class="related-products">
+        <div class="section-header">
+            <h2>You May Also Like</h2>
+            <a href="{% url 'store:category' product.category.name %}" class="view-all">View All</a>
+        </div>
+        
+        <div class="related-products-grid">
+            {% for related_product in related_products %}
+            <div class="related-product-card">
+                <div class="product-image-container">
+                    <a href="{% url 'store:product_detail' related_product.id %}">
+                        <img src="{{ related_product.imageURL }}" alt="{{ related_product.name }}">
+                    </a>
+                    {% if related_product.discount_percentage > 0 %}
+                    <span class="discount-badge">-{{ related_product.discount_percentage }}%</span>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h3><a href="{% url 'store:product_detail' related_product.id %}">{{ related_product.name }}</a></h3>
+                    <div class="price">
+                        <span class="current-price">Ksh {{ related_product.get_discount_price|floatformat:2|intcomma }}</span>
+                        {% if related_product.discount_percentage > 0 %}
+                        <span class="original-price">Ksh {{ related_product.price|floatformat:2|intcomma }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 </section>
-{% endblock content %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/product-detail.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize star ratings display
+    function initializeStarRatings() {
+        document.querySelectorAll('.stars[data-rating]').forEach(starsContainer => {
+            const rating = parseFloat(starsContainer.getAttribute('data-rating'));
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = (rating % 1) >= 0.5;
+            
+            let starsHTML = '';
+            
+            // Add full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="fas fa-star"></i>';
+            }
+            
+            // Add half star if needed
+            if (hasHalfStar) {
+                starsHTML += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            // Add empty stars
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="far fa-star"></i>';
+            }
+            
+            starsContainer.innerHTML = starsHTML;
+        });
+    }
+
+    // Initialize interactive star rating for forms
+    function initInteractiveStarRating() {
+        const starInputs = document.querySelectorAll('.star-rating input');
+        const starLabels = document.querySelectorAll('.star-rating label');
+        
+        starLabels.forEach(label => {
+            label.addEventListener('click', function() {
+                const inputId = this.getAttribute('for');
+                const input = document.getElementById(inputId);
+                const rating = input.value;
+                
+                // Update visual display
+                starLabels.forEach((l, index) => {
+                    if (index < rating) {
+                        l.style.color = '#ffc107';
+                    } else {
+                        l.style.color = '#ddd';
+                    }
+                });
+            });
+        });
+
+        // Initialize form stars if editing a review
+        const currentRatingInput = document.querySelector('.star-rating input:checked');
+        if (currentRatingInput) {
+            const rating = currentRatingInput.value;
+            starLabels.forEach((label, index) => {
+                if (index < rating) {
+                    label.style.color = '#ffc107';
+                }
+            });
+        }
+    }
+
+    // Initialize all components
+    initializeStarRatings();
+    initInteractiveStarRating();
+});
+</script>
+{% endblock %}

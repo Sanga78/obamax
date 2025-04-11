@@ -1,23 +1,130 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+<style>
+    .contact-hero {
+    background: linear-gradient(rgba(67, 97, 238, 0.85), rgba(67, 97, 238, 0.9)), 
+                url('{% static "images/contact.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 5rem 0;
+    margin-bottom: 3rem;
+}
+
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="contact-us">
-    <h1>Contact Us</h1>
-    <p>If you have any questions, suggestions, or concerns, please feel free to contact us using the form below. We value your feedback and will respond to your inquiry as soon as possible.</p>
-    <form action="#" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required value="{{user.username}}">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required value="{{user.email}}">
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
+<section class="contact-hero">
+    <div class="container">
+        <h1>Get in Touch</h1>
+        <p class="subtitle">We're here to help and answer any questions you might have</p>
+    </div>
 </section>
-<section class="contact-info">
-    <h2>Contact Information</h2>
-    <p>Email: <a href="mailto:support@ecomart.com">kelvinkipkosgei@gmail.com</a></p>
-    <p>Phone: <a href="tel:+1234567890">+254 714 710 947</a></p>
-    <p>LinkedIn: <a href="https://www.linkedin.com/in/ecomart" target="_blank">Ecomart Accessories</a></p>
-    <p>WhatsApp: <a href="https://wa.me/254714710947" target="_blank">+254 714 710 947</a></p>
+
+<div class="contact-container">
+    <div class="contact-grid">
+        <!-- Contact Form Section -->
+        <section class="contact-form-section">
+            <h2><i class="fas fa-envelope"></i> Send Us a Message</h2>
+            <form class="contact-form" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required value="{{ user.username|default:'' }}" placeholder="John Doe">
+                    <i class="fas fa-user"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required value="{{ user.email|default:'' }}" placeholder="your@email.com">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="How can we help?">
+                    <i class="fas fa-tag"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="6" required placeholder="Type your message here..."></textarea>
+                    <i class="fas fa-comment"></i>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </section>
+
+        <!-- Contact Info Section -->
+        <section class="contact-info-section">
+            <h2><i class="fas fa-map-marker-alt"></i> Contact Information</h2>
+            
+            <div class="contact-method">
+                <div class="icon-circle">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <div>
+                    <h3>Email Us</h3>
+                    <a href="mailto:support@novatech.com">novatech@gmail.com</a>
+                </div>
+            </div>
+            
+            <div class="contact-method">
+                <div class="icon-circle">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                    <h3>Call Us</h3>
+                    <a href="tel:+254712345678">+254 712 345 678</a>
+                </div>
+            </div>
+            
+            <div class="contact-method">
+                <div class="icon-circle">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div>
+                    <h3>WhatsApp</h3>
+                    <a href="https://wa.me/254712345678" target="_blank">+254 712 345 678</a>
+                </div>
+            </div>
+            
+            <div class="contact-method">
+                <div class="icon-circle">
+                    <i class="fab fa-linkedin"></i>
+                </div>
+                <div>
+                    <h3>LinkedIn</h3>
+                    <a href="https://www.linkedin.com/" target="_blank">NovaTech Kenya</a>
+                </div>
+            </div>
+            
+            <div class="business-hours">
+                <h3><i class="fas fa-clock"></i> Business Hours</h3>
+                <ul>
+                    <li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+                    <li>Saturday: 9:00 AM - 4:00 PM</li>
+                    <li>Sunday: Closed</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Map Section -->
+<section class="map-section">
+    <h2><i class="fas fa-map-marked-alt"></i> Our Location</h2>
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.808559559897!2d36.82115931475393!3d-1.2923858359807728!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d664f5f7e7%3A0x1e3e0e2b2b2b2b2b!2sNairobi%20City%20Centre!5e0!3m2!1sen!2ske!4v1620000000000!5m2!1sen!2ske" 
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
 </section>
-{% endblock content %}
+{% endblock %}

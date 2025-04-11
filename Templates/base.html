@@ -4,10 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecomart Accessories</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" crossorigin="anonymous"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <script src="{% static 'js/navbar.js' %}" defer></script>
+    <title>{% block title %}NovaTech - Premium Electronics{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/new.css' %}">
+    
+    <!-- Page-specific CSS -->
+    {% block extra_css %}{% endblock %}
     <script type="text/javascript">
 		var user = '{{request.user}}'
 
@@ -58,86 +70,245 @@
 	</script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div>
-                <img src="{% static 'images/logo.png' %}" alt="Ecomart Accessories Logo" class="logo">
-                <input class="menu-btn" type="checkbox" id="menu-btn" />
-                <label class="menu-icon" for="menu-btn"><span class="nav-icon"></span></label>
-                <div id="nav-grid"></div>
-            </div>
-            <div class="menu">
-                <ul>
-                    <li>
-                        <a href="{% url 'store:home_page' %}">
-                            <i class="fa-solid fa-house" class="nav-icon"></i> Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url "store:about" %}">
-                            <i class="fa-solid fa-info" class="nav-icon"></i>About Us
-                        </a>
-                    </li>
-                    <li>
-                        <div class="dropdown">
-                            <button class="dropbtn">
-                                <i class="fa-solid fa-caret-down" class="nav-icon"></i> Categories
-                            </button>
-                            <div class="dropdown-content">
-                                {% for category in categories %}
-                                    <a href="{% url 'store:category' category.name %}">{{ category.name }}</a>
-                                {% endfor %}
-                            </div>
-                        </div>                     
-                    </li>
-                    <li>
-                        <a href="{% url "store:contact" %}">
-                            <i class="fa-solid fa-phone" class="nav-icon"></i>Contact Us
-                        </a>
-                    </li>
-                </ul>   
-            </div>
-            <div class="icons">
-                <div class="login-icon">
-                    <i class="fa-solid fa-search" id="search-btn"></i>
-                </div>
-                <div class="dropdown">
-                    <button class="dropbtn">
-                        <i class="fa-solid fa-user-plus" class="nav-icon"></i>
-                    </button>
-                    <div class="dropdown-content">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'store:profile' %}">My Profile</a>
-                            <a href="{% url "logout" %}">Logout</a>
-                        {% else %}
-                            <a href="{% url "login" %}">Login</a>
-                            <a href="{% url "register" %}">Sign Up</a>
-                        {% endif %}                       
-                    </div>
-                </div>
-                <a href="{% url 'store:cart' %}">
-                    <i class="fa-solid fa-cart-shopping" class="nav-icon" id="cart-icon"></i>
-	    	    <p id="cart-total-icon">{{cartItems}}</p>
-                </a>
-                <div class="search-form">
-                    <form method="get" action="{% url 'store:search' %}">
-                        {% csrf_token %}
-                        <input type="text" id="search-bar" name="query" placeholder="Search products...">
-                        <button id="search-button">Search</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-    </header>
-      <!-- Main Sidebar Container -->
-      <!-- {%include 'sidebar.html' with user=user id=id %} -->
-    <main>
-       {% block content %}
-       {% endblock content%}
+    <!-- Navbar -->
+    {% include 'partials/navbar.html' %}
+
+    <!-- Notification Messages -->
+    {% if messages %}
+    <div class="notification-container">
+        {% for message in messages %}
+        <div class="notification {{ message.tags }}">
+            {{ message }}
+            <button class="close-notification">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
     </main>
-    <footer>
-        <p>&copy; 2024 Ecomart Accessories. All rights reserved.</p>
+
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Shop</h3>
+                <ul>
+                    {% for category in categories %}
+                    <li><a href="{% url 'store:category' category.name %}"> {{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="{% url 'store:contact' %}">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Returns & Warranty</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="{% url 'store:about' %}">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section newsletter">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest products and deals</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 NovaTech. All rights reserved.</p>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fab fa-cc-apple-pay"></i>
+            </div>
+        </div>
     </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- <script src="{% static 'js/main.js' %}"></script> -->
+    
+    <!-- Page-specific JS -->
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Notification close functionality
+        document.querySelectorAll('.close-notification').forEach(button => {
+            button.addEventListener('click', () => {
+                button.parentElement.style.opacity = '0';
+                setTimeout(() => {
+                    button.parentElement.remove();
+                }, 300);
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Dark mode toggle (if implemented)
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            });
+
+            // Check for saved preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navbarLinks = document.getElementById('navbarLinks');
+        
+        if (mobileMenuBtn && navbarLinks) {
+            mobileMenuBtn.addEventListener('click', function() {
+                navbarLinks.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+        }
+
+        // Dropdown Toggle for Mobile
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                if (window.innerWidth <= 992) {
+                    e.preventDefault();
+                    const dropdown = this.closest('.dropdown');
+                    dropdown.classList.toggle('active');
+                    
+                    // Close other dropdowns
+                    document.querySelectorAll('.dropdown').forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown') && !e.target.closest('.mobile-menu-btn')) {
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+                
+                if (window.innerWidth <= 992 && navbarLinks && !e.target.closest('#navbarLinks')) {
+                    navbarLinks.classList.remove('active');
+                    if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+                }
+            }
+        });
+
+        // Cart button animation
+        const cartBtn = document.querySelector('.cart-btn');
+        if (cartBtn) {
+            cartBtn.addEventListener('click', function() {
+                this.classList.add('animate');
+                setTimeout(() => {
+                    this.classList.remove('animate');
+                }, 500);
+            });
+        }
+
+        // Search toggle functionality
+        const searchBtn = document.getElementById('search-btn');
+        const searchForm = document.querySelector('.search-form');
+        
+        if (searchBtn && searchForm) {
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchForm.classList.toggle('active');
+            });
+        }
+
+        // Close search when clicking outside
+        document.addEventListener('click', function(e) {
+            if (searchForm && !e.target.closest('.search-container') && !e.target.closest('#search-btn')) {
+                searchForm.classList.remove('active');
+            }
+        });
+
+        // User dropdown toggle
+        const userBtn = document.querySelector('.user-btn');
+        const userDropdown = document.querySelector('.user-menu');
+        
+        if (userBtn && userDropdown) {
+            userBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+        }
+
+        // Close user dropdown when clicking outside
+        document.addEventListener('click', function() {
+            if (userDropdown) {
+                userDropdown.classList.remove('show');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+    </script>
     <script src="{% static 'js/cart.js' %}"></script>
 </body>
 </html>

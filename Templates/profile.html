@@ -1,66 +1,148 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="profile-container">
-        <h2>User Profile</h2>
-        <div class="profile"  id="profile-form">
-            <form action="/update_profile" method="post">
-                {% csrf_token %}
-                <h3>Profile Details</h3>
-                <div class="form-field">
-                    <p>
-                        <strong><label for="name">Full Name:</label></strong><input type="text" id="name" name="name" value="{{customer.name}}">
-                    </p>
-                </div>
-                <div class="form-field">
-                    <p>
-                        <strong><label for="email">Email:</label></strong><input type="email" id="email" name="email" value="{{customer.email}}">
-                    </p>
-                </div>
-                <div class="form-field">
-                    <p>
-                        <strong><label for="phone">Phone:</label></strong><input type="tel" id="phone" name="phone" value="{{customer.phone_no}}">
-                    </p>
-                </div>
-                <button id="save-profile-button" type="submit">Update Profile</button>
-            </form>          
+<div class="profile-dashboard">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="user-avatar">
+            <img src="{% static 'images/default-avatar.png' %}" alt="User Avatar" id="avatar-image">
+            <button class="avatar-upload-btn">
+                <i class="fas fa-camera"></i>
+            </button>
         </div>
-        
-        <div class="order-history box-element">
-            <h3>Order History</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td>{{order.id}}</td>
-                        <td>{{order.date_ordered}}</td>
-                        {% if order.shipping %}
-                        <td>Shipped</td>
-                        {% else %}
-                        <td>Processed</td>
-                        {% endif%}
-                        <td>${{order.get_cart_total}}</td>
-                    </tr>
-                    {% endfor %}
-                    <!-- {% for item in items%}
-                    <tr>
-                        <td>{{item.product.name}}</td>
-                        <td>ksh {{item.product.price|floatformat:2}}</td>
-                        <td>Delivered</td>
-                        <td>{{item.quantity}}</td>
-                    </tr>
-                    {% endfor %} -->
-                </tbody>
-            </table>
-        </div>
+        <h1>{{ customer.name|default:"My Account" }}</h1>
+        <p class="member-since">Member since {{ customer.date_joined|date:"F Y" }}</p>
     </div>
 
-{%endblock content%}
+    <div class="profile-layout">
+        <!-- Profile Details Section -->
+        <section class="profile-section">
+            <div class="section-header">
+                <h2><i class="fas fa-user-cog"></i> Profile Settings</h2>
+            </div>
+            
+            <form class="profile-form" method="post" action="/update_profile">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="name" name="name" value="{{ customer.name }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" value="{{ customer.email }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="phone" name="phone" value="{{ customer.phone_no }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="address">Shipping Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <textarea id="address" name="address" rows="3">{{ customer.shipping_address }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="#" class="btn-change-password">
+                        <i class="fas fa-lock"></i> Change Password
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <!-- Order History Section -->
+        <section class="orders-section">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Order History</h2>
+                <div class="order-filter">
+                    <select id="order-filter">
+                        <option value="all">All Orders</option>
+                        <option value="last30">Last 30 Days</option>
+                        <option value="last6">Last 6 Months</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+            </div>
+            
+            {% if orders %}
+            <div class="orders-table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.date_ordered|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="status-badge {% if order.shipping %}shipped{% else %}processing{% endif %}">
+                                    {% if order.shipping %}Shipped{% else %}Processing{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ order.get_cart_items }}</td>
+                            <td>Ksh {{ order.get_cart_total|floatformat:2|intcomma }}</td>
+                            <td>
+                                <a href="{% url 'store:order_detail' order.id %}" class="view-order">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination">
+                <a href="#" class="page-nav disabled"><i class="fas fa-chevron-left"></i></a>
+                <a href="#" class="page-active">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#" class="page-nav"><i class="fas fa-chevron-right"></i></a>
+            </div>
+            {% else %}
+            <div class="empty-orders">
+                <i class="fas fa-box-open"></i>
+                <p>You haven't placed any orders yet</p>
+                <a href="{% url 'store:home_page' %}" class="btn-shop">Start Shopping</a>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}
